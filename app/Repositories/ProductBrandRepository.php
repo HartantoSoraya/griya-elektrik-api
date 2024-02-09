@@ -24,7 +24,11 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
 
     public function updateBrand(string $id, array $data)
     {
-        return ProductBrand::find($id)->update($data);
+        $productBrand = ProductBrand::find($id);
+
+        $productBrand->update($data);
+
+        return $productBrand;
     }
 
     public function deleteBrand(string $id)
