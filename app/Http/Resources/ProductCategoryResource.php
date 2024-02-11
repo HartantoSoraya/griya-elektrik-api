@@ -17,9 +17,27 @@ class ProductCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id ? new ProductCategoryResource($this->parent) : null,
-            'children' => ProductCategoryResource::collection($this->children),
+            $this->mergeWhen($this->relationLoaded('children'), [
+                'children' => ProductCategoryResource::collection($this->children),
+            ]),
+            $this->mergeWhen($this->relationLoaded('childrenRecursive'), [
+                'children' => ProductCategoryResource::collection($this->childrenRecursive),
+            ]),
             'name' => $this->name,
             'slug' => $this->slug,
         ];
+
+        // return [
+        //     'id' => $this->id,
+        //     'parent_id' => $this->parent_id ? new ProductCategoryResource($this->parent) : null,
+        //     $this->mergeWhen($this->relationLoaded('children'), [
+        //         'children' => ProductCategoryResource::collection($this->children),
+        //     ]),
+        //     $this->mergeWhen($this->relationLoaded('childrenRecursive'), [
+        //         'children' => ProductCategoryResource::collection($this->childrenRecursive), // Memuat childrenRecursive, bukan children
+        //     ]),
+        //     'name' => $this->name,
+        //     'slug' => $this->slug,
+        // ];
     }
 }

@@ -18,6 +18,8 @@ Route::get('web_configuration', [App\Http\Controllers\Api\WebConfigurationContro
 route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
+Route::get('product-categories/leaf', [App\Http\Controllers\Api\ProductCategoryController::class, 'readLeafCategories']);
+Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);
 Route::get('product-categories/{id}', [App\Http\Controllers\Api\ProductCategoryController::class, 'show']);
 
 Route::get('product-brands', [App\Http\Controllers\Api\ProductBrandController::class, 'index']);

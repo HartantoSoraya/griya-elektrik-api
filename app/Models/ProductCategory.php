@@ -24,6 +24,11 @@ class ProductCategory extends Model
         return $this->belongsTo(ProductCategory::class, 'parent_id');
     }
 
+    public static function getRootCategories()
+    {
+        return static::with('childrenRecursive')->whereNull('parent_id')->get();
+    }
+
     public function children()
     {
         return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
@@ -31,8 +36,23 @@ class ProductCategory extends Model
 
     public function childrenRecursive()
     {
-        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->with('childrenRecursive');
+        return $this->children()->with('childrenRecursive');
     }
+
+    public function isLeaf()
+    {
+        return $this->children->isEmpty();
+    }
+
+    public static function getLeafCategories()
+    {
+        return static::whereDoesntHave('children')->get();
+    }
+
+    // public function childrenRecursive()
+    // {
+    //     return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->with('childrenRecursive');
+    // }
 
     public function products()
     {
