@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
 
@@ -78,7 +79,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * */
-    public function update(StoreProductRequest $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
         try {
             $product = $this->product->updateProduct($id, $request->all());

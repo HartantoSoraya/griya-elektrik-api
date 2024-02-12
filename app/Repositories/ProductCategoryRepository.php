@@ -12,6 +12,20 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return ProductCategory::all();
     }
 
+    public function getRootCategories()
+    {
+        $rootCategories = ProductCategory::getRootCategories();
+
+        return $rootCategories;
+    }
+
+    public function getLeafCategories()
+    {
+        $leafCategories = ProductCategory::getLeafCategories();
+
+        return $leafCategories;
+    }
+
     public function getCategoryById(string $id)
     {
         return ProductCategory::find($id);
@@ -24,7 +38,11 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 
     public function updateCategory(string $id, array $data)
     {
-        return ProductCategory::find($id)->update($data);
+        $productCategory = ProductCategory::find($id);
+
+        $productCategory->update($data);
+
+        return $productCategory;
     }
 
     public function deleteCategory(string $id)

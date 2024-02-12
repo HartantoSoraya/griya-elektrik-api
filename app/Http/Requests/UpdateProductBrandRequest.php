@@ -14,7 +14,7 @@ class UpdateProductBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255|string',
+            'name' => 'required|string|max:255',
             'slug' => 'required|unique:product_brands,slug',
         ];
     }
