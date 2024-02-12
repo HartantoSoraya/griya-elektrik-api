@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductBrandRequest;
+use App\Http\Requests\UpdateProductBrandRequest;
 use App\Http\Resources\ProductBrandResource;
 use App\Interfaces\ProductBrandRepositoryInterface;
-use Illuminate\Http\Request;
 
 class ProductBrandController extends Controller
 {
@@ -78,7 +78,7 @@ class ProductBrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * */
-    public function update(Request $request, $id)
+    public function update(UpdateProductBrandRequest $request, $id)
     {
         try {
             $productBrand = $this->productBrand->updateBrand($id, $request->all());

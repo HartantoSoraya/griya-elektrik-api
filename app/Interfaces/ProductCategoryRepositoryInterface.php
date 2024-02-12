@@ -6,6 +6,10 @@ interface ProductCategoryRepositoryInterface
 {
     public function getAllCategory();
 
+    public function getRootCategories();
+
+    public function getLeafCategories();
+
     public function getCategoryById(string $id);
 
     public function createCategory(array $data);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
+use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Http\Resources\ProductCategoryResource;
 use App\Interfaces\ProductCategoryRepositoryInterface;
 
@@ -28,6 +29,28 @@ class ProductCategoryController extends Controller
             $productCategories = $this->productCategory->getAllCategory();
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductCategoryResource::collection($productCategories), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function readRootCategories()
+    {
+        try {
+            $rootCategories = $this->productCategory->getRootCategories();
+
+            return ResponseHelper::jsonResponse(true, 'Success', ProductCategoryResource::collection($rootCategories), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function readLeafCategories()
+    {
+        try {
+            $leafCategories = $this->productCategory->getLeafCategories();
+
+            return ResponseHelper::jsonResponse(true, 'Success', ProductCategoryResource::collection($leafCategories), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
@@ -78,7 +101,7 @@ class ProductCategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      * */
-    public function update(StoreProductCategoryRequest $request, $id)
+    public function update(UpdateProductCategoryRequest $request, $id)
     {
         try {
             $productCategory = $this->productCategory->updateCategory($id, $request->all());
