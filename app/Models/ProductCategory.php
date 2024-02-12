@@ -49,11 +49,6 @@ class ProductCategory extends Model
         return static::whereDoesntHave('children')->get();
     }
 
-    // public function childrenRecursive()
-    // {
-    //     return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->with('childrenRecursive');
-    // }
-
     public function products()
     {
         return $this->hasMany(Product::class);
