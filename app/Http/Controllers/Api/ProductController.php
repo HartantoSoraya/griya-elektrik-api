@@ -8,6 +8,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
+use App\Models\ProductCategory;
 
 class ProductController extends Controller
 {
@@ -43,6 +44,21 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->product->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->product->isUniqueCode($code));
+                $request['code'] = $code;
+            }
+
+            $productCategory = ProductCategory::find($request['product_category_id']);
+            if ($productCategory->children()->exists()) {
+                return ResponseHelper::jsonResponse(false, 'Cannot use product category with children. Please remove the children first.', null, 400);
+            }
+
             $product = $this->product->createProduct($request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
@@ -82,6 +98,21 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $id)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->product->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->product->isUniqueCode($code, $id));
+                $request['code'] = $code;
+            }
+
+            $productCategory = ProductCategory::find($request['product_category_id']);
+            if ($productCategory->children()->exists()) {
+                return ResponseHelper::jsonResponse(false, 'Cannot use product category with children. Please remove the children first.', null, 400);
+            }
+
             $product = $this->product->updateProduct($id, $request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);

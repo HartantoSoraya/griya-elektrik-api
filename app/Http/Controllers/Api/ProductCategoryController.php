@@ -65,6 +65,24 @@ class ProductCategoryController extends Controller
     public function store(StoreProductCategoryRequest $request)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->productCategory->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->productCategory->isUniqueCode($code));
+                $request['code'] = $code;
+            }
+
+            if ($request->has('parent_id')) {
+                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+
+                if ($parentCategory && $parentCategory->products()->exists()) {
+                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                }
+            }
+
             $productCategory = $this->productCategory->createCategory($request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductCategoryResource($productCategory), 200);
@@ -104,6 +122,24 @@ class ProductCategoryController extends Controller
     public function update(UpdateProductCategoryRequest $request, $id)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->productCategory->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->productCategory->isUniqueCode($code, $id));
+                $request['code'] = $code;
+            }
+
+            if ($request->has('parent_id')) {
+                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+
+                if ($parentCategory && $parentCategory->products()->exists()) {
+                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                }
+            }
+
             $productCategory = $this->productCategory->updateCategory($id, $request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductCategoryResource($productCategory), 200);

@@ -6,7 +6,6 @@ use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
 
 class ProductCategory extends Model
 {
@@ -15,6 +14,7 @@ class ProductCategory extends Model
 
     protected $fillable = [
         'parent_id',
+        'code',
         'name',
         'slug',
     ];
@@ -52,10 +52,5 @@ class ProductCategory extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
-    }
-
-    public function setCodeAttribute($value)
-    {
-        $this->attributes['code'] = Str::upper(Str::random(10));
     }
 }

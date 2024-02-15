@@ -10,7 +10,38 @@ use Tests\TestCase;
 
 class ProductAPITest extends TestCase
 {
-    public function test_product_api_call_create_expect_successfull()
+    public function test_product_api_call_create_with_auto_code_expect_successfull()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $product = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make(['code' => 'AUTO'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/products', $product);
+
+        $api->assertSuccessful();
+
+        $product['code'] = $api['data']['code'];
+
+        $this->assertDatabaseHas(
+            'products', $product
+        );
+    }
+
+    public function test_product_api_call_create_with_random_code_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -37,6 +68,33 @@ class ProductAPITest extends TestCase
         $this->assertDatabaseHas(
             'products', $product
         );
+    }
+
+    public function test_product_api_call_create_with_random_code_and_product_category_has_children_expect_fail()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productCategory = ProductCategory::factory()
+            ->has(ProductCategory::factory()->count(1), 'children')
+            ->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $product = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make()->toArray();
+
+        $api = $this->json('POST', 'api/v1/products', $product);
+
+        $api->assertStatus(400);
     }
 
     public function test_product_api_call_create_with_existing_code_expect_fail()
@@ -103,7 +161,7 @@ class ProductAPITest extends TestCase
         }
     }
 
-    public function test_product_api_call_update_expect_successfull()
+    public function test_product_api_call_update_with_random_code_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -139,6 +197,78 @@ class ProductAPITest extends TestCase
         $this->assertDatabaseHas(
             'products', $productUpdate
         );
+    }
+
+    public function test_product_api_call_update_with_auto_code_expect_successfull()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $product = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->create();
+
+        $productUpdate = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make(['code' => 'AUTO'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/products/'.$product->id, $productUpdate);
+
+        $api->assertSuccessful();
+
+        $productUpdate['code'] = $api['data']['code'];
+
+        $this->assertDatabaseHas(
+            'products', $productUpdate
+        );
+    }
+
+    public function test_product_api_call_update_with_existing_code_in_same_product_and_product_category_has_children_expect_fail()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $existingProductCategory = ProductCategory::factory()->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $existingProduct = Product::factory()
+            ->for($existingProductCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->create();
+
+        $productCategory = ProductCategory::factory()
+            ->has(ProductCategory::factory()->count(1), 'children')
+            ->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $productUpdate = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make(['code' => $existingProduct->code])->toArray();
+
+        $api = $this->json('POST', 'api/v1/products/'.$existingProduct->id, $productUpdate);
+
+        $api->assertStatus(400);
     }
 
     public function test_product_api_call_update_with_existing_code_in_same_product_expect_successfull()
