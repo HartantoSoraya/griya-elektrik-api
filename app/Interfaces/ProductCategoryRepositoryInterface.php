@@ -17,4 +17,8 @@ interface ProductCategoryRepositoryInterface
     public function updateCategory(string $id, array $data);
 
     public function deleteCategory(string $id);
+
+    public function generateCode(int $tryCount);
+
+    public function isUniqueCode(string $code, ?string $expectId = null);
 }

@@ -49,4 +49,27 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
     {
         return ProductCategory::find($id)->delete();
     }
+
+    public function generateCode(int $tryCount): string
+    {
+        $count = ProductCategory::count() + $tryCount;
+        $code = str_pad($count, 2, '0', STR_PAD_LEFT);
+
+        return $code;
+    }
+
+    public function isUniqueCode(string $code, ?string $expectId = null): bool
+    {
+        if (ProductCategory::count() == 0) {
+            return true;
+        }
+
+        $result = ProductCategory::where('code', $code);
+
+        if ($expectId) {
+            $result = $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0 ? true : false;
+    }
 }

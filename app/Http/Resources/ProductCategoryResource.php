@@ -23,6 +23,7 @@ class ProductCategoryResource extends JsonResource
             $this->mergeWhen($this->relationLoaded('childrenRecursive'), [
                 'children' => ProductCategoryResource::collection($this->childrenRecursive),
             ]),
+            'code' => $this->code,
             'name' => $this->name,
             'slug' => $this->slug,
         ];

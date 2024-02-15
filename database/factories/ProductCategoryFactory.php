@@ -2,13 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductCategory>
  */
 class ProductCategoryFactory extends Factory
 {
+    protected $model = ProductCategory::class;
+
     protected $productCategories = [
         'Elektronik' => [
             'Televisi' => ['LED', 'Plasma', 'LCD'],
@@ -77,6 +81,7 @@ class ProductCategoryFactory extends Factory
         $productCategories = $this->flattenArray($this->productCategories);
 
         return [
+            'code' => Str::upper(Str::random(10)),
             'name' => $productCategories[array_rand($productCategories)],
             'slug' => $this->faker->unique()->slug(),
         ];

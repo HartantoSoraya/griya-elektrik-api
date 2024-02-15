@@ -41,4 +41,27 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return ProductImage::find($id)->delete();
     }
+
+    public function generateCode(int $tryCount): string
+    {
+        $productCount = Product::count() + $tryCount;
+        $code = str_pad($productCount, 2, '0', STR_PAD_LEFT);
+
+        return $code;
+    }
+
+    public function isUniqueCode(string $code, ?string $expectId = null): bool
+    {
+        if (Product::count() == 0) {
+            return true;
+        }
+
+        $result = Product::where('code', $code);
+
+        if ($expectId) {
+            $result = $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0 ? true : false;
+    }
 }
