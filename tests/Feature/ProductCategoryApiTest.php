@@ -309,6 +309,38 @@ class ProductCategoryAPITest extends TestCase
         );
     }
 
+    public function test_product_category_api_call_read_empty_categories_expect_collection()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        ProductCategory::factory()
+            ->has(Product::factory()->for(ProductBrand::factory()->create(), 'brand'))
+            ->count(5)->create();
+
+        ProductCategory::factory()->count(5)->create();
+
+        $api = $this->json('GET', 'api/v1/product-categories/empty');
+
+        $api->assertSuccessful();
+
+        foreach ($api->json()['data'] as $category) {
+            $productCategory = ProductCategory::find($category['id']);
+
+            $this->assertFalse($productCategory->products()->exists());
+        }
+
+        // $this->assertDatabaseHas(
+        //     'product_categories', $productCategory
+        // );
+    }
+
     public function test_product_category_api_call_update_with_random_code_expect_successfull()
     {
         $password = '1234567890';

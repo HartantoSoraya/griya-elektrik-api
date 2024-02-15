@@ -16,7 +16,7 @@ class ProductCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'parent_id' => $this->parent_id ? new ProductCategoryResource($this->parent) : null,
+            'parent' => $this->parent_id ? new ProductCategoryResource($this->parent) : null,
             $this->mergeWhen($this->relationLoaded('children'), [
                 'children' => ProductCategoryResource::collection($this->children),
             ]),

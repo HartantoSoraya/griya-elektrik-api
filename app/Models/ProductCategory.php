@@ -53,4 +53,9 @@ class ProductCategory extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public static function getEmptyCategories()
+    {
+        return self::doesntHave('products')->get();
+    }
 }

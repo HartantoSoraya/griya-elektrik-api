@@ -10,6 +10,8 @@ interface ProductCategoryRepositoryInterface
 
     public function getLeafCategories();
 
+    public function getEmptyCategories();
+
     public function getCategoryById(string $id);
 
     public function createCategory(array $data);
