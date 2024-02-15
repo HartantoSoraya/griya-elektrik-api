@@ -6,6 +6,7 @@ use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class ProductCategory extends Model
 {
@@ -57,5 +58,14 @@ class ProductCategory extends Model
     public static function getEmptyCategories()
     {
         return self::doesntHave('products')->get();
+    }
+
+    public function setSlugAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['slug'] = $value;
+        } else {
+            $this->attributes['slug'] = Str::slug($this->attributes['name'].$this->attributes['code']);
+        }
     }
 }
