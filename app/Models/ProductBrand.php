@@ -23,8 +23,12 @@ class ProductBrand extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function setCodeAttribute($value)
+    public function setSlugAttribute($value)
     {
-        $this->attributes['code'] = Str::upper(Str::random(10));
+        if ($value) {
+            $this->attributes['slug'] = $value;
+        } else {
+            $this->attributes['slug'] = Str::slug($this->attributes['name'].$this->attributes['code']);
+        }
     }
 }
