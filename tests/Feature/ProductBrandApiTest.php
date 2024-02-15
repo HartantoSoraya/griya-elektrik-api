@@ -6,7 +6,7 @@ use App\Models\ProductBrand;
 use App\Models\User;
 use Tests\TestCase;
 
-class ProductBrandApiTest extends TestCase
+class ProductBrandAPITest extends TestCase
 {
     /**
      * A basic feature test example.
