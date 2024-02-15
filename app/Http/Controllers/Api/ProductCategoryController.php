@@ -56,6 +56,17 @@ class ProductCategoryController extends Controller
         }
     }
 
+    public function readEmptyCategories()
+    {
+        try {
+            $emptyCategories = $this->productCategory->getEmptyCategories();
+
+            return ResponseHelper::jsonResponse(true, 'Success', ProductCategoryResource::collection($emptyCategories), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
     /**
      *  Store a newly created resource in storage.
      *

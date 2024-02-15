@@ -26,6 +26,13 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return $leafCategories;
     }
 
+    public function getEmptyCategories()
+    {
+        $emptyCategories = ProductCategory::getEmptyCategories();
+
+        return $emptyCategories;
+    }
+
     public function getCategoryById(string $id)
     {
         return ProductCategory::find($id);
