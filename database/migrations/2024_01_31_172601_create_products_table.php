@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('code');
-            $table->string('slug')->unique();
             $table->uuid('product_category_id');
             $table->foreign('product_category_id')->references('id')->on('product_categories')->onDelete('cascade');
             $table->uuid('product_brand_id');
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->longText('description');
             $table->string('price');
             $table->boolean('is_active')->default(true);
+            $table->string('slug')->unique();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -14,8 +14,15 @@ class UpdateProductCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => 'required|string|max:255|unique:product_categories,code,'.$this->route('id'),
             'name' => 'required|string|max:255',
-            'slug' => 'required|unique:product_categories,slug,'.$this->route('id'),
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
     }
 }

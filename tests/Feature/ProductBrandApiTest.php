@@ -8,10 +8,32 @@ use Tests\TestCase;
 
 class ProductBrandAPITest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     */
-    public function test_product_brand_api_call_create_expect_successfull()
+    public function test_product_brand_api_call_create_with_auto_code_expect_successfull()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productBrand = ProductBrand::factory()->make(['code' => 'AUTO'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-brands', $productBrand);
+
+        $api->assertSuccessful();
+
+        $productBrand['code'] = $api['data']['code'];
+        $productBrand['slug'] = $api['data']['slug'];
+
+        $this->assertDatabaseHas(
+            'product_brands', $productBrand
+        );
+    }
+
+    public function test_product_brand_api_call_create_with_random_code_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -31,6 +53,26 @@ class ProductBrandAPITest extends TestCase
         $this->assertDatabaseHas(
             'product_brands', $productBrand
         );
+    }
+
+    public function test_product_brand_api_call_create_with_existing_code_expect_failure()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        ProductBrand::factory()->create(['code' => '1234567890']);
+
+        $productBrand = ProductBrand::factory()->make(['code' => '1234567890'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-brands', $productBrand);
+
+        $api->assertStatus(422);
     }
 
     public function test_product_brand_api_call_read_expect_collection()
@@ -59,7 +101,34 @@ class ProductBrandAPITest extends TestCase
         }
     }
 
-    public function test_product_brand_api_call_update_expect_successfull()
+    public function test_product_brand_api_call_update_with_auto_code_expect_successfull()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $updatedProductBrand = ProductBrand::factory()->make(['code' => 'AUTO'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-brands/'.$productBrand->id, $updatedProductBrand);
+
+        $api->assertSuccessful();
+
+        $updatedProductBrand['code'] = $api['data']['code'];
+        $updatedProductBrand['slug'] = $api['data']['slug'];
+
+        $this->assertDatabaseHas(
+            'product_brands', $updatedProductBrand
+        );
+    }
+
+    public function test_product_brand_api_call_update_with_random_code_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -81,6 +150,28 @@ class ProductBrandAPITest extends TestCase
         $this->assertDatabaseHas(
             'product_brands', $updatedProductBrand
         );
+    }
+
+    public function test_product_brand_api_call_update_with_existing_code_expect_failure()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        ProductBrand::factory()->create(['code' => '1234567890']);
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $updatedProductBrand = ProductBrand::factory()->make(['code' => '1234567890'])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-brands/'.$productBrand->id, $updatedProductBrand);
+
+        $api->assertStatus(422);
     }
 
     public function test_product_brand_api_call_delete_expect_successfull()

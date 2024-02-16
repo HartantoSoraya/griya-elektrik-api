@@ -31,6 +31,7 @@ class ProductCategoryAPITest extends TestCase
         $api->assertSuccessful();
 
         $productCategory['code'] = $api['data']['code'];
+        $productCategory['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_categories', $productCategory
@@ -385,6 +386,7 @@ class ProductCategoryAPITest extends TestCase
         $api->assertSuccessful();
 
         $updatedProductCategory['code'] = $api['data']['code'];
+        $updatedProductCategory['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_categories', $updatedProductCategory

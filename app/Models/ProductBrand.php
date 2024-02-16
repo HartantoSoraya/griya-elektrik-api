@@ -14,6 +14,7 @@ class ProductBrand extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'code',
         'name',
         'slug',
     ];

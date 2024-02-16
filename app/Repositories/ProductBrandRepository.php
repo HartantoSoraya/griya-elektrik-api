@@ -35,4 +35,27 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
     {
         return ProductBrand::find($id)->delete();
     }
+
+    public function generateCode(int $tryCount): string
+    {
+        $count = ProductBrand::count() + $tryCount;
+        $code = str_pad($count, 2, '0', STR_PAD_LEFT);
+
+        return $code;
+    }
+
+    public function isUniqueCode(string $code, ?string $expectId = null): bool
+    {
+        if (ProductBrand::count() == 0) {
+            return true;
+        }
+
+        $result = ProductBrand::where('code', $code);
+
+        if ($expectId) {
+            $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0;
+    }
 }

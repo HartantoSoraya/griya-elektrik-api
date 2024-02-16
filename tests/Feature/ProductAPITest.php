@@ -35,6 +35,7 @@ class ProductAPITest extends TestCase
         $api->assertSuccessful();
 
         $product['code'] = $api['data']['code'];
+        $product['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'products', $product
@@ -70,7 +71,7 @@ class ProductAPITest extends TestCase
         );
     }
 
-    public function test_product_api_call_create_with_random_code_and_product_category_has_children_expect_fail()
+    public function test_product_api_call_create_with_random_code_and_product_category_has_children_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -97,7 +98,7 @@ class ProductAPITest extends TestCase
         $api->assertStatus(400);
     }
 
-    public function test_product_api_call_create_with_existing_code_expect_fail()
+    public function test_product_api_call_create_with_existing_code_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -229,13 +230,14 @@ class ProductAPITest extends TestCase
         $api->assertSuccessful();
 
         $productUpdate['code'] = $api['data']['code'];
+        $productUpdate['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'products', $productUpdate
         );
     }
 
-    public function test_product_api_call_update_with_existing_code_in_same_product_and_product_category_has_children_expect_fail()
+    public function test_product_api_call_update_with_existing_code_in_same_product_and_product_category_has_children_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -305,7 +307,7 @@ class ProductAPITest extends TestCase
         );
     }
 
-    public function test_product_api_call_update_with_existing_code_in_different_product_expect_fail()
+    public function test_product_api_call_update_with_existing_code_in_different_product_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

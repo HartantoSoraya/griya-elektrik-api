@@ -14,8 +14,15 @@ class StoreProductCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => 'required|string|max:255|unique:product_categories,code',
             'name' => 'required', 'max:255', 'string',
-            'slug' => 'required|unique:product_categories,slug',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
     }
 }

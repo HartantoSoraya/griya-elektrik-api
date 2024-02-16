@@ -14,8 +14,15 @@ class UpdateProductBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => 'required|string|max:255|unique:product_brands,code,'.$this->route('id'),
             'name' => 'required|string|max:255',
-            'slug' => 'required|unique:product_brands,slug',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
     }
 }

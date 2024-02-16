@@ -83,7 +83,7 @@ class ProductCategoryFactory extends Factory
         return [
             'code' => Str::upper(Str::random(10)),
             'name' => $productCategories[array_rand($productCategories)],
-            'slug' => $this->faker->unique()->slug(),
+            'slug' => '',
         ];
     }
 
