@@ -17,4 +17,11 @@ class StoreProductCategoryRequest extends FormRequest
             'name' => 'required', 'max:255', 'string'
         ];
     }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
+    }
 }

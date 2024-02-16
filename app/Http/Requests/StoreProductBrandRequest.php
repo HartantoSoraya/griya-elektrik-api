@@ -14,8 +14,15 @@ class StoreProductBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'code' => 'required|string|max:255|unique:product_brands,code',
             'name' => 'required|max:255|string',
-            'slug' => 'required|unique:product_brands,slug',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
     }
 }

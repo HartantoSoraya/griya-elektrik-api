@@ -43,6 +43,16 @@ class ProductBrandController extends Controller
     public function store(StoreProductBrandRequest $request)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->productBrand->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->productBrand->isUniqueCode($code));
+                $request['code'] = $code;
+            }
+
             $productBrand = $this->productBrand->createBrand($request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductBrandResource($productBrand), 200);
@@ -81,6 +91,16 @@ class ProductBrandController extends Controller
     public function update(UpdateProductBrandRequest $request, $id)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->productBrand->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->productBrand->isUniqueCode($code, $id));
+                $request['code'] = $code;
+            }
+
             $productBrand = $this->productBrand->updateBrand($id, $request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductBrandResource($productBrand), 200);

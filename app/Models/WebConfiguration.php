@@ -13,19 +13,12 @@ class WebConfiguration extends Model
     protected $fillable = [
         'title',
         'description',
-        'email',
-        'phone',
         'logo',
-        'map',
-        'address',
-        'facebook',
-        'instagram',
-        'youtube',
     ];
 
     public function setLogoAttribute($value)
     {
-        if ($value != 'undefined') {
+        if ($value) {
             $this->attributes['logo'] = $value->store('assets/web-configurations', 'public');
         }
     }

@@ -8,9 +8,8 @@ class UpdateProductRequest extends FormRequest
 {
     public function rules()
     {
-        $validation = [
+        return [
             'code' => 'required|string|max:255|unique:products,code,'.$this->route('id'),
-            'slug' => 'required|unique:products,slug,'.$this->route('id'),
             'product_category_id' => 'required',
             'product_brand_id' => 'required',
             'name' => 'required|string|max:255',
@@ -18,7 +17,12 @@ class UpdateProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'is_active' => 'required|boolean',
         ];
+    }
 
-        return $validation;
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'slug' => '',
+        ]);
     }
 }

@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('product_brands', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('code');
             $table->string('name');
             $table->string('slug')->unique();
             $table->softDeletes();

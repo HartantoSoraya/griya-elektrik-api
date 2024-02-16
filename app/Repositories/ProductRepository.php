@@ -44,8 +44,8 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $productCount = Product::count() + $tryCount;
-        $code = str_pad($productCount, 2, '0', STR_PAD_LEFT);
+        $count = Product::count() + $tryCount;
+        $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;
     }

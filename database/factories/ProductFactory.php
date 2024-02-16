@@ -24,11 +24,11 @@ class ProductFactory extends Factory
     {
         return [
             'code' => Str::upper(Str::random(10)),
-            'slug' => $this->faker->slug,
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
             'price' => $this->faker->numberBetween(100, 1000),
             'is_active' => $this->faker->boolean,
+            'slug' => '',
         ];
     }
 }

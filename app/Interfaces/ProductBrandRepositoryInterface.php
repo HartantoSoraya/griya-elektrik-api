@@ -13,4 +13,8 @@ interface ProductBrandRepositoryInterface
     public function updateBrand(string $id, array $data);
 
     public function deleteBrand(string $id);
+
+    public function generateCode(int $tryCount);
+
+    public function isUniqueCode(string $code, ?string $expectId = null);
 }
