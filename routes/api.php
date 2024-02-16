@@ -15,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('web_configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'index']);
 
-route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
+Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
+
+Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);
@@ -33,6 +35,12 @@ Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('web_configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'update']);
+
+    Route::post('branches', [App\Http\Controllers\Api\BranchController::class, 'store']);
+    Route::post('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'update']);
+    Route::delete('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'destroy']);
+
+    Route::delete('branch-images/{id}', [App\Http\Controllers\Api\BranchImageController::class, 'destroy']);
 
     route::post('banners', [App\Http\Controllers\Api\BannerController::class, 'store']);
     route::post('banners/{id}', [App\Http\Controllers\Api\BannerController::class, 'update']);
