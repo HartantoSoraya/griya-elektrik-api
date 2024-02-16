@@ -15,9 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('product_categories')->onDelete('cascade');
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->softDeletes();
             $table->timestamps();
         });
