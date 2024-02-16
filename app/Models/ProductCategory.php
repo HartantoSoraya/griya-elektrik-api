@@ -59,13 +59,4 @@ class ProductCategory extends Model
     {
         return self::doesntHave('products')->get();
     }
-
-    public function setSlugAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['slug'] = $value;
-        } else {
-            $this->attributes['slug'] = Str::slug($this->attributes['name'].$this->attributes['code']);
-        }
-    }
 }

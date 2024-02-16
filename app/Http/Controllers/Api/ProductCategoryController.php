@@ -8,6 +8,7 @@ use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Http\Resources\ProductCategoryResource;
 use App\Interfaces\ProductCategoryRepositoryInterface;
+use Illuminate\Support\Str;
 
 class ProductCategoryController extends Controller
 {
@@ -82,7 +83,7 @@ class ProductCategoryController extends Controller
                 do {
                     $code = $this->productCategory->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->productCategory->isUniqueCode($code));
+                } while (!$this->productCategory->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -93,6 +94,8 @@ class ProductCategoryController extends Controller
                     return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
                 }
             }
+
+            $request['slug'] = Str::slug($request['name'] . $request['code']);
 
             $productCategory = $this->productCategory->createCategory($request->all());
 
@@ -139,7 +142,7 @@ class ProductCategoryController extends Controller
                 do {
                     $code = $this->productCategory->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->productCategory->isUniqueCode($code, $id));
+                } while (!$this->productCategory->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 
