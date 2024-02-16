@@ -83,7 +83,7 @@ class ProductCategoryController extends Controller
                 do {
                     $code = $this->productCategory->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->productCategory->isUniqueCode($code));
+                } while (! $this->productCategory->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -95,7 +95,7 @@ class ProductCategoryController extends Controller
                 }
             }
 
-            $request['slug'] = Str::slug($request['name'] . $request['code']);
+            $request['slug'] = Str::slug($request['name'].$request['code']);
 
             $productCategory = $this->productCategory->createCategory($request->all());
 
@@ -142,7 +142,7 @@ class ProductCategoryController extends Controller
                 do {
                     $code = $this->productCategory->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->productCategory->isUniqueCode($code, $id));
+                } while (! $this->productCategory->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 

@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('branch_images', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('branch_id');
+            $table->uuid('id')->primary();
+            $table->uuid('branch_id');
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->string('image_path');
             $table->timestamps();
 
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
         });
     }
 

@@ -55,6 +55,8 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productCategory['slug'] = $api['data']['slug'];
+
         $this->assertDatabaseHas(
             'product_categories', $productCategory
         );
@@ -81,6 +83,8 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productCategory['slug'] = $api['data']['slug'];
+
         $this->assertDatabaseHas(
             'product_categories', $productCategory
         );
@@ -98,6 +102,8 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productCategory['slug'] = $api['data']['slug'];
+
         $this->assertDatabaseHas(
             'product_categories', $productCategory
         );
@@ -114,6 +120,8 @@ class ProductCategoryAPITest extends TestCase
         $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
 
         $api->assertSuccessful();
+
+        $productCategory['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_categories', $productCategory
@@ -194,6 +202,8 @@ class ProductCategoryAPITest extends TestCase
 
             $api->assertSuccessful();
 
+            $productCategory['slug'] = $api['data']['slug'];
+
             $this->assertDatabaseHas(
                 'product_categories', $productCategory
             );
@@ -211,6 +221,8 @@ class ProductCategoryAPITest extends TestCase
 
             $api->assertSuccessful();
 
+            $productCategory['slug'] = $api['data']['slug'];
+
             $this->assertDatabaseHas(
                 'product_categories', $productCategory
             );
@@ -227,6 +239,8 @@ class ProductCategoryAPITest extends TestCase
             $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
 
             $api->assertSuccessful();
+
+            $productCategory['slug'] = $api['data']['slug'];
 
             $this->assertDatabaseHas(
                 'product_categories', $productCategory
@@ -263,6 +277,8 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productCategory['slug'] = $api['data']['slug'];
+
         $this->assertDatabaseHas(
             'product_categories', $productCategory
         );
@@ -280,6 +296,8 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productCategory['slug'] = $api['data']['slug'];
+
         $this->assertDatabaseHas(
             'product_categories', $productCategory
         );
@@ -296,6 +314,8 @@ class ProductCategoryAPITest extends TestCase
         $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
 
         $api->assertSuccessful();
+
+        $productCategory['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_categories', $productCategory
