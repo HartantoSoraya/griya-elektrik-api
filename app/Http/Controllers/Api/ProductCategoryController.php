@@ -147,10 +147,12 @@ class ProductCategoryController extends Controller
             }
 
             if ($request->has('parent_id')) {
-                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+                if ($request['parent_id']) {
+                    $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
 
-                if ($parentCategory && $parentCategory->products()->exists()) {
-                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                    if ($parentCategory && $parentCategory->products()->exists()) {
+                        return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                    }
                 }
             }
 
