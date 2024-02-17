@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
@@ -8,7 +8,6 @@ use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
 use App\Http\Resources\BranchResource;
 use App\Interfaces\BranchRepositoryInterface;
-use Illuminate\Http\Request;
 
 class BranchController extends Controller
 {
@@ -19,6 +18,11 @@ class BranchController extends Controller
         $this->branch = $branch;
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
         try {
@@ -30,35 +34,25 @@ class BranchController extends Controller
         }
     }
 
-    public function readAllActiveBranch()
-    {
-        try {
-            $branches = $this->branch->getAllActiveBranch();
-
-            return ResponseHelper::jsonResponse(true, 'Success', BranchResource::collection($branches), 200);
-        } catch (\Exception $exception) {
-            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
-        }
-    }
-
-    public function readBranchById(Request $request, string $id)
-    {
-        try {
-            $branch = $this->branch->getBranchById($id);
-
-            if ($branch) {
-                return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
-            } else {
-                return ResponseHelper::jsonResponse(false, 'Branch not found', null, 404);
-            }
-        } catch (\Exception $exception) {
-            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
-        }
-    }
-
+    /**
+     *  Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * */
     public function store(StoreBranchRequest $request)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->branch->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->branch->isUniqueCode($code));
+                $request['code'] = $code;
+            }
+
             $branch = $this->branch->createBranch($request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
@@ -67,9 +61,41 @@ class BranchController extends Controller
         }
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(string $id)
+    {
+        try {
+            $branch = $this->branch->getBranchById($id);
+
+            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     * */
     public function update(UpdateBranchRequest $request, string $id)
     {
         try {
+            $code = $request['code'];
+            if ($code == 'AUTO') {
+                $tryCount = 1;
+                do {
+                    $code = $this->branch->generateCode($tryCount);
+                    $tryCount++;
+                } while (! $this->branch->isUniqueCode($code, $id));
+                $request['code'] = $code;
+            }
+
             $branch = $this->branch->updateBranch($id, $request->all());
 
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
@@ -78,7 +104,12 @@ class BranchController extends Controller
         }
     }
 
-    public function delete(Request $request, string $id)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @return \Illuminate\Http\Response
+     * */
+    public function destroy(string $id)
     {
         try {
             $this->branch->deleteBranch($id);
