@@ -36,6 +36,29 @@ class BranchRepository implements BranchRepositoryInterface
         return $branch;
     }
 
+    public function updateMainBranch(string $id, bool $isMain)
+    {
+        Branch::where([
+            ['id', '!=', $id],
+            ['is_main', true],
+        ])->update(['is_main' => false]);
+
+        $branch = Branch::find($id);
+        $branch->is_main = $isMain;
+        $branch->save();
+
+        return $branch;
+    }
+
+    public function updateActiveBranch(string $id, bool $isActive)
+    {
+        $branch = Branch::find($id);
+        $branch->is_active = $isActive;
+        $branch->save();
+
+        return $branch;
+    }
+
     public function deleteBranch(string $id)
     {
         return Branch::find($id)->delete();

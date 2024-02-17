@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('branches', [App\Http\Controllers\Api\BranchController::class, 'store']);
     Route::post('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'update']);
+    Route::post('branches/{id}/main', [App\Http\Controllers\Api\BranchController::class, 'updateMainBranch']);
+    Route::post('branches/{id}/active', [App\Http\Controllers\Api\BranchController::class, 'updateActiveBranch']);
     Route::delete('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'destroy']);
 
     Route::delete('branch-images/{id}', [App\Http\Controllers\Api\BranchImageController::class, 'destroy']);

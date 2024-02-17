@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BranchResource;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
-use App\Http\Resources\BranchResource;
 use App\Interfaces\BranchRepositoryInterface;
 
 class BranchController extends Controller
@@ -97,6 +98,28 @@ class BranchController extends Controller
             }
 
             $branch = $this->branch->updateBranch($id, $request->all());
+
+            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function updateMainBranch(Request $request, string $id)
+    {
+        try {
+            $branch = $this->branch->updateMainBranch($id, $request->is_main);
+
+            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function updateActiveBranch(Request $request, string $id)
+    {
+        try {
+            $branch = $this->branch->updateActiveBranch($id, $request->is_active);
 
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
         } catch (\Exception $exception) {

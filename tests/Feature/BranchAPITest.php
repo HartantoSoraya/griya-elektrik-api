@@ -97,13 +97,98 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $branch->name = 'Updated Name';
-
         $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $branch->toArray());
 
         $api->assertSuccessful();
 
         $this->assertDatabaseHas('branches', $branch->toArray());
+    }
+
+    public function test_branch_api_call_update_main_branch_is_true_expect_successful()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $branch = Branch::factory()->create();
+
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/main', ['is_main' => true]);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_main' => true]);
+
+        $count = Branch::where([
+            ['id', '!=', $branch->id],
+            ['is_main', '=', true]
+        ])->count();
+
+        $this->assertTrue($count == 0);
+    }
+
+    public function test_branch_api_call_update_main_branch_is_false_expect_successful()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $branch = Branch::factory()->create(['is_main' => true]);
+
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/main', ['is_main' => false]);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_main' => false]);
+    }
+
+    public function test_branch_api_call_update_active_branch_is_true_expect_successful()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $branch = Branch::factory()->create();
+
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/active', ['is_active' => true]);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_active' => true]);
+    }
+
+    public function test_branch_api_call_update_active_branch_is_false_expect_successful()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $branch = Branch::factory()->create(['is_active' => true]);
+
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/active', ['is_active' => false]);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_active' => false]);
     }
 
     public function test_branch_api_call_update_with_random_code_expect_successful()
@@ -139,12 +224,14 @@ class BranchAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $existingBranch = Branch::factory()->create();
+    
         $branch = Branch::factory()->create();
-        $branch2 = Branch::factory()->create();
 
-        $branch->code = $branch2->code;
+        $updatedBranch = $branch->toArray();
+        $updatedBranch['code'] = $existingBranch->code;
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $branch->toArray());
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
 
         $api->assertStatus(422);
     }

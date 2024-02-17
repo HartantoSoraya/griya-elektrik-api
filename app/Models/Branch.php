@@ -25,7 +25,12 @@ class Branch extends Model
         'youtube',
         'sort',
         'is_main',
-        'status',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_main' => 'boolean',
+        'is_active' => 'boolean',
     ];
 
     public function branchImages()
