@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Branch>
@@ -17,12 +18,12 @@ class BranchFactory extends Factory
     public function definition(): array
     {
         return [
-            'code' => $this->faker->word,
-            'name' => $this->faker->word,
+            'code' => Str::upper(Str::random(10)),
+            'name' => $this->faker->unique()->word,
             'map' => $this->faker->word,
             'address' => $this->faker->word,
             'city' => $this->faker->word,
-            'email' => $this->faker->word,
+            'email' => $this->faker->email,
             'phone' => $this->faker->word,
             'facebook' => $this->faker->word,
             'instagram' => $this->faker->word,
