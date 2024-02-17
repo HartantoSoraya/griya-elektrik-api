@@ -30,7 +30,7 @@ class BranchFactory extends Factory
             'youtube' => $this->faker->word,
             'sort' => $this->faker->randomNumber(0),
             'is_main' => $this->faker->boolean,
-            'status' => $this->faker->randomNumber(0),
+            'is_active' => $this->faker->randomNumber(0),
         ];
     }
 }

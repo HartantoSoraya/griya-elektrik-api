@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('youtube');
             $table->integer('sort');
             $table->boolean('is_main')->default(false);
-            $table->integer('status');
+            $table->integer('is_active');
             $table->softDeletes();
             $table->timestamps();
         });

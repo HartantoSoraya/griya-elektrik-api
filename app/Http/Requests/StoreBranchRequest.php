@@ -26,7 +26,7 @@ class StoreBranchRequest extends FormRequest
             'youtube' => 'nullable|string|max:255',
             'sort' => 'required|integer',
             'is_main' => 'required|boolean',
-            'status' => 'required|boolean',
+            'is_active' => 'required|boolean',
         ];
     }
 }

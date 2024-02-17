@@ -27,7 +27,7 @@ class BranchResource extends JsonResource
             'youtube' => $this->youtube,
             'sort' => $this->sort,
             'is_main' => $this->is_main,
-            'status' => $this->status,
+            'is_active' => $this->is_active,
         ];
     }
 }
