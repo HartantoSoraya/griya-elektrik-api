@@ -17,10 +17,13 @@ class Banner extends Model
         'mobile_image',
     ];
 
-    public function setImageAttribute($value)
+    public function setDesktopImageAttribute($value)
     {
-        if ($value !== 'undefined') {
-            $this->attributes['image'] = $value->store('assets/banners', 'public');
-        }
+        $this->attributes['desktop_image'] = $value->store('assets/banners', 'public');
+    }
+
+    public function setMobileImageAttribute($value)
+    {
+        $this->attributes['mobile_image'] = $value->store('assets/banners', 'public');
     }
 }

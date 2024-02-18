@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use App\Models\ProductImage;
+use Illuminate\Support\Facades\DB;
+use App\Interfaces\ProductRepositoryInterface;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -20,16 +21,84 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function createProduct(array $data)
     {
-        return Product::create($data);
+        DB::beginTransaction();
+
+        try {
+            // $product = Product::create($data);
+
+            $product = new Product();
+            $product->code = $data['code'];
+            $product->product_category_id = $data['product_category_id'];
+            $product->product_brand_id = $data['product_brand_id'];
+            $product->name = $data['name'];
+            $product->description = $data['description'];
+            $product->price = $data['price'];
+            $product->is_active = $data['is_active'];
+            $product->slug = $data['slug'];
+            $product->thumbnail = $data['thumbnail']->store('assets/products', 'public');
+            $product->save();
+
+            if (isset($data['product_images'])) {
+                foreach ($data['product_images'] as $image) {
+                    $product->productImages()->create([
+                        'image' => $image,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $product;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }        
     }
 
     public function updateProduct(string $id, array $data)
     {
-        $product = Product::find($id);
+        // $product = Product::find($id);
 
-        $product->update($data);
+        // $product->update($data);
 
-        return $product;
+        // return $product;
+
+        DB::beginTransaction();
+
+        try {
+            $product = Product::find($id);
+            $product->code = $data['code'];
+            $product->product_category_id = $data['product_category_id'];
+            $product->product_brand_id = $data['product_brand_id'];
+            $product->name = $data['name'];
+            $product->description = $data['description'];
+            $product->price = $data['price'];
+            $product->is_active = $data['is_active'];
+            $product->slug = $data['slug'];
+
+            if (isset($data['thumbnail'])) {
+                $product->thumbnail = $data['thumbnail']->store('assets/products', 'public');
+            }
+
+            $product->save();
+
+            if (isset($data['product_images'])) {
+                foreach ($data['product_images'] as $image) {
+                    $product->productImages()->create([
+                        'image' => $image,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return $product;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
     }
 
     public function deleteProduct(string $id)

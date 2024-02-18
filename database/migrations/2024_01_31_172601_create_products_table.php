@@ -19,6 +19,7 @@ return new class extends Migration
             $table->uuid('product_brand_id');
             $table->foreign('product_brand_id')->references('id')->on('product_brands')->onDelete('cascade');
             $table->string('name');
+            $table->string('thumbnail');
             $table->longText('description');
             $table->string('price');
             $table->boolean('is_active')->default(true);

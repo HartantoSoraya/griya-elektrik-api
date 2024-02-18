@@ -16,6 +16,7 @@ class ProductCategory extends Model
         'parent_id',
         'code',
         'name',
+        'image',
         'slug',
     ];
 
@@ -57,5 +58,10 @@ class ProductCategory extends Model
     public static function getEmptyCategories()
     {
         return self::doesntHave('products')->get();
+    }
+
+    public function setImageAttribute($value)
+    {
+        $this->attributes['image'] = $value->store('assets/product-categories', 'public');
     }
 }

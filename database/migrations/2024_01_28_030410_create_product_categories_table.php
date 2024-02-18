@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('parent_id')->references('id')->on('product_categories')->onDelete('cascade');
             $table->string('code');
             $table->string('name');
+            $table->string('image');
             $table->string('slug');
             $table->softDeletes();
             $table->timestamps();

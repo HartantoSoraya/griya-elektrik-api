@@ -52,4 +52,9 @@ class Product extends Model
             $this->attributes['slug'] = Str::slug($this->attributes['name'].$this->attributes['code']);
         }
     }
+
+    public function setThumbnailAttribute($value)
+    {
+        $this->attributes['thumbnail'] = $value->store('assets/products', 'public');
+    }
 }
