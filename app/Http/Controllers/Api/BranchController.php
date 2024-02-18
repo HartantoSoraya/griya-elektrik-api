@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BranchResource;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
+use App\Http\Resources\BranchResource;
 use App\Interfaces\BranchRepositoryInterface;
+use App\Models\Branch;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
@@ -44,20 +46,44 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         try {
-            $code = $request['code'];
+            DB::beginTransaction();
+
+            $branch = new Branch();
+
+            $code = $request->code;
             if ($code == 'AUTO') {
                 $tryCount = 1;
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
                 } while (! $this->branch->isUniqueCode($code));
-                $request['code'] = $code;
+                $branch->code = $code;
             }
 
-            $branch = $this->branch->createBranch($request->all());
+            $branch->name = $request->name;
+            $branch->map = $request->map;
+            $branch->address = $request->address;
+            $branch->city = $request->city;
+            $branch->email = $request->email;
+            $branch->phone = $request->phone;
+            $branch->facebook = $request->facebook;
+            $branch->instagram = $request->instagram;
+            $branch->youtube = $request->youtube;
+            $branch->sort = $request->sort;
+            $branch->is_main = $request->is_main;
+            $branch->is_active = $request->is_active;
+            $branch->save();
+
+            foreach ($request->branch_images as $image) {
+                $branch->branchImages()->create(['image' => $image]);
+            }
+
+            DB::commit();
 
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
+            DB::rollBack();
+
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
     }
@@ -87,20 +113,40 @@ class BranchController extends Controller
     public function update(UpdateBranchRequest $request, string $id)
     {
         try {
-            $code = $request['code'];
+            DB::beginTransaction();
+
+            $branch = new Branch();
+
+            $code = $request->code;
             if ($code == 'AUTO') {
                 $tryCount = 1;
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
                 } while (! $this->branch->isUniqueCode($code, $id));
-                $request['code'] = $code;
+                $code = $code;
             }
 
-            $branch = $this->branch->updateBranch($id, $request->all());
+            $branch->name = $request->name;
+            $branch->map = $request->map;
+            $branch->address = $request->address;
+            $branch->city = $request->city;
+            $branch->email = $request->email;
+            $branch->phone = $request->phone;
+            $branch->facebook = $request->facebook;
+            $branch->instagram = $request->instagram;
+            $branch->youtube = $request->youtube;
+            $branch->sort = $request->sort;
+            $branch->is_main = $request->is_main;
+            $branch->is_active = $request->is_active;
+            $branch->save();
+
+            DB::commit();
 
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
+            DB::rollBack();
+
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
     }

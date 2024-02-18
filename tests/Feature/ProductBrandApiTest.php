@@ -163,11 +163,12 @@ class ProductBrandAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        ProductBrand::factory()->create(['code' => '1234567890']);
+        $existingProductBrand = ProductBrand::factory()->create();
 
         $productBrand = ProductBrand::factory()->create();
 
-        $updatedProductBrand = ProductBrand::factory()->make(['code' => '1234567890'])->toArray();
+        $updatedProductBrand = $productBrand->toArray();
+        $updatedProductBrand['code'] = $existingProductBrand->code;
 
         $api = $this->json('POST', 'api/v1/product-brands/'.$productBrand->id, $updatedProductBrand);
 

@@ -14,6 +14,8 @@ class ProductResource extends JsonResource
             'category' => $this->category,
             'brand' => $this->brand,
             'name' => $this->name,
+            'thumbnail' => $this->thumbnail,
+            'thumbnail_url' => $this->thumbnail ? asset('storage/'.$this->thumbnail) : '',
             'description' => $this->description,
             'price' => $this->price,
             'is_active' => $this->is_active,

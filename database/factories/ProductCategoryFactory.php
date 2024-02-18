@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 /**
@@ -83,6 +84,7 @@ class ProductCategoryFactory extends Factory
         return [
             'code' => Str::upper(Str::random(10)),
             'name' => $productCategories[array_rand($productCategories)],
+            'image' => UploadedFile::fake()->image('avatar.jpg'),
             'slug' => '',
         ];
     }
