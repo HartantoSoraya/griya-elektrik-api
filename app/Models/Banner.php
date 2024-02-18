@@ -13,17 +13,11 @@ class Banner extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'desktop_image',
-        'mobile_image',
+        'image',
     ];
 
-    public function setDesktopImageAttribute($value)
+    public function setImageAttribute($value)
     {
-        $this->attributes['desktop_image'] = $value->store('assets/banners', 'public');
-    }
-
-    public function setMobileImageAttribute($value)
-    {
-        $this->attributes['mobile_image'] = $value->store('assets/banners', 'public');
+        $this->attributes['image'] = $value->store('assets/banners', 'public');
     }
 }
