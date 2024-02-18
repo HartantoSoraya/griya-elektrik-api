@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\DB;
-use App\Interfaces\ProductRepositoryInterface;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -53,7 +53,7 @@ class ProductRepository implements ProductRepositoryInterface
             DB::rollBack();
 
             throw $e;
-        }        
+        }
     }
 
     public function updateProduct(string $id, array $data)

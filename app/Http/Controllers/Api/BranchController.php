@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Branch;
-use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\BranchResource;
 use App\Http\Requests\StoreBranchRequest;
 use App\Http\Requests\UpdateBranchRequest;
+use App\Http\Resources\BranchResource;
 use App\Interfaces\BranchRepositoryInterface;
+use App\Models\Branch;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
@@ -49,7 +49,7 @@ class BranchController extends Controller
             DB::beginTransaction();
 
             $branch = new Branch();
-            
+
             $code = $request->code;
             if ($code == 'AUTO') {
                 $tryCount = 1;
@@ -58,7 +58,7 @@ class BranchController extends Controller
                     $tryCount++;
                 } while (! $this->branch->isUniqueCode($code));
                 $branch->code = $code;
-            }            
+            }
 
             $branch->name = $request->name;
             $branch->map = $request->map;

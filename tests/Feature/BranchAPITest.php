@@ -125,7 +125,7 @@ class BranchAPITest extends TestCase
 
         $count = Branch::where([
             ['id', '!=', $branch->id],
-            ['is_main', '=', true]
+            ['is_main', '=', true],
         ])->count();
 
         $this->assertTrue($count == 0);
@@ -225,7 +225,7 @@ class BranchAPITest extends TestCase
         $api->assertSuccessful();
 
         $existingBranch = Branch::factory()->create();
-    
+
         $branch = Branch::factory()->create();
 
         $updatedBranch = $branch->toArray();

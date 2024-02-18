@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class ProductCategoryAPITest extends TestCase
 {
@@ -402,7 +402,7 @@ class ProductCategoryAPITest extends TestCase
 
         $updatedProductCategory = ProductCategory::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/' . $productCategory->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory->id, $updatedProductCategory);
 
         $api->assertSuccessful();
 
@@ -427,7 +427,7 @@ class ProductCategoryAPITest extends TestCase
 
         $updatedProductCategory = ProductCategory::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/' . $productCategory->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory->id, $updatedProductCategory);
 
         $api->assertSuccessful();
 
@@ -463,7 +463,7 @@ class ProductCategoryAPITest extends TestCase
             ->for($parentCategory, 'parent')
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/' . $category->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-categories/'.$category->id, $updatedProductCategory);
 
         $api->assertStatus(422);
     }
@@ -481,7 +481,7 @@ class ProductCategoryAPITest extends TestCase
 
         $productCategory = ProductCategory::factory()->create();
 
-        $api = $this->json('DELETE', 'api/v1/product-categories/' . $productCategory->id);
+        $api = $this->json('DELETE', 'api/v1/product-categories/'.$productCategory->id);
 
         $api->assertSuccessful();
 

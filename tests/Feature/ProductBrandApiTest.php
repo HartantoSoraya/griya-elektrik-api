@@ -166,7 +166,7 @@ class ProductBrandAPITest extends TestCase
         $existingProductBrand = ProductBrand::factory()->create();
 
         $productBrand = ProductBrand::factory()->create();
-        
+
         $updatedProductBrand = $productBrand->toArray();
         $updatedProductBrand['code'] = $existingProductBrand->code;
 

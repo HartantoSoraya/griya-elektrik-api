@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
 use App\Models\ProductCategory;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductCategory>
