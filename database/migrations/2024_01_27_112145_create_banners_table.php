@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('desktop_image');
-            $table->string('mobile_image');
+            $table->string('image');
             $table->softDeletes();
             $table->timestamps();
         });
