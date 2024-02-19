@@ -50,6 +50,8 @@ class BranchRepository implements BranchRepositoryInterface
         }
 
         DB::commit();
+
+        return $branch;
     }
 
     public function updateBranch(string $id, array $data)
