@@ -54,7 +54,8 @@ class WebConfigurationAPITest extends TestCase
         $api->assertSuccessful();
 
         $this->assertDatabaseHas(
-            'web_configurations', $webConfiguration
+            'web_configurations',
+            $webConfiguration
         );
     }
 }

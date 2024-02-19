@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\BranchRepositoryInterface;
 use App\Models\Branch;
+use Illuminate\Support\Facades\DB;
 
 class BranchRepository implements BranchRepositoryInterface
 {
@@ -24,7 +25,31 @@ class BranchRepository implements BranchRepositoryInterface
 
     public function createBranch(array $data)
     {
-        return Branch::create($data);
+        DB::beginTransaction();
+
+        $branch = Branch::create([
+            'code' => $data['code'],
+            'name' => $data['name'],
+            'map' => $data['map'],
+            'address' => $data['address'],
+            'city' => $data['city'],
+            'email' => $data['email'],
+            'phone' => $data['phone'],
+            'facebook' => $data['facebook'],
+            'instagram' => $data['instagram'],
+            'youtube' => $data['youtube'],
+            'sort' => $data['sort'],
+            'is_main' => $data['is_main'],
+            'is_active' => $data['is_active'],
+        ]);
+
+        foreach ($data['branch_images'] as $image) {
+            $branch->branchImages()->create([
+                'image' => $image,
+            ]);
+        }
+
+        DB::commit();
     }
 
     public function updateBranch(string $id, array $data)

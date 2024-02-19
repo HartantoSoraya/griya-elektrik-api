@@ -46,43 +46,20 @@ class BranchController extends Controller
     public function store(StoreBranchRequest $request)
     {
         try {
-            DB::beginTransaction();
+            $code = $request['code'];
 
-            $branch = new Branch();
-
-            $code = $request->code;
             if ($code == 'AUTO') {
                 $tryCount = 1;
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->branch->isUniqueCode($code));
-                $branch->code = $code;
+                } while (!$this->branch->isUniqueCode($code));
+                $request['code'] = $code;
             }
 
-            $branch->name = $request->name;
-            $branch->map = $request->map;
-            $branch->address = $request->address;
-            $branch->city = $request->city;
-            $branch->email = $request->email;
-            $branch->phone = $request->phone;
-            $branch->facebook = $request->facebook;
-            $branch->instagram = $request->instagram;
-            $branch->youtube = $request->youtube;
-            $branch->sort = $request->sort;
-            $branch->is_main = $request->is_main;
-            $branch->is_active = $request->is_active;
-            $branch->save();
-
-            foreach ($request->branch_images as $image) {
-                $branch->branchImages()->create(['image' => $image]);
-            }
-
-            DB::commit();
-
+            $branch = $this->branch->createBranch($request->all());
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
-            DB::rollBack();
 
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
@@ -123,7 +100,7 @@ class BranchController extends Controller
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->branch->isUniqueCode($code, $id));
+                } while (!$this->branch->isUniqueCode($code, $id));
                 $code = $code;
             }
 

@@ -54,7 +54,7 @@ class BannerController extends Controller
         try {
             $banner = $this->bannerRepository->getBannerById($id);
 
-            if (! $banner) {
+            if (!$banner) {
                 return ResponseHelper::jsonResponse(false, 'Banner not found', [], 404);
             }
 
