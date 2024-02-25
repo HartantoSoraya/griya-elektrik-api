@@ -38,8 +38,10 @@ class BranchImageController extends Controller
      */
     public function store(StoreBranchRequest $request): JsonResponse
     {
+        $request = $request->validated();
+
         try {
-            $branchImage = $this->branchImageRepository->createBranchImage($request->all());
+            $branchImage = $this->branchImageRepository->createBranchImage($request);
 
             return ResponseHelper::jsonResponse(true, 'Branch image created successfully', new BranchImageResource($branchImage), 201);
         } catch (\Exception $e) {
@@ -70,8 +72,10 @@ class BranchImageController extends Controller
      */
     public function update(UpdateBranchRequest $request, string $id): JsonResponse
     {
+        $request = $request->validated();
+
         try {
-            $branchImage = $this->branchImageRepository->updateBranchImage($request->all(), $id);
+            $branchImage = $this->branchImageRepository->updateBranchImage($request, $id);
 
             return ResponseHelper::jsonResponse(true, 'Branch image updated successfully', new BranchImageResource($branchImage), 200);
         } catch (\Exception $e) {

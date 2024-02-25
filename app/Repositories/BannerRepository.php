@@ -19,12 +19,20 @@ class BannerRepository implements BannerRepositoryInterface
 
     public function createBanner($data)
     {
-        return Banner::create($data);
+        $banner = new Banner();
+        $banner->image = $data['image']->store('assets/banners', 'public');
+        $banner->save();
+
+        return $banner;
     }
 
     public function updateBanner($data, $id)
     {
-        return Banner::find($id)->update($data);
+        $banner = Banner::find($id);
+        $banner->image = $data['image']->store('assets/banners', 'public');
+        $banner->save();
+
+        return $banner;
     }
 
     public function deleteBanner($id)

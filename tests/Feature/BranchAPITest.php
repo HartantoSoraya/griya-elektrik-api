@@ -3,11 +3,21 @@
 namespace Tests\Feature;
 
 use App\Models\Branch;
+use App\Models\ProductImage;
 use App\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class BranchAPITest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
+
     public function test_branch_api_call_create_with_auto_code_expect_successful()
     {
         $password = '1234567890';
@@ -21,13 +31,25 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->make(['code' => 'AUTO'])->toArray();
 
+        $branchImages = [];
+        for ($i = 0; $i < 3; $i++) {
+            array_push($branchImages, ProductImage::factory()->make()->image);
+        }
+        $branch['images'] = $branchImages;
+
         $api = $this->json('POST', 'api/v1/branches', $branch);
 
         $api->assertSuccessful();
 
         $branch['code'] = $api->json('data')['code'];
 
-        $this->assertDatabaseHas('branches', $branch);
+        $this->assertDatabaseHas(
+            'branches', Arr::except($branch, ['images'])
+        );
+
+        foreach ($api['data']['images'] as $image) {
+            $this->assertTrue(Storage::disk('public')->exists($image));
+        }
     }
 
     public function test_branch_api_call_create_with_random_code_expect_successful()
@@ -97,14 +119,31 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $branch->toArray());
+        $updatedBranch = Branch::factory()->make(['code' => 'AUTO'])->toArray();
+
+        $branchImages = [];
+        for ($i = 0; $i < 3; $i++) {
+            array_push($branchImages, ProductImage::factory()->make()->image);
+        }
+        $updatedBranch['images'] = $branchImages;
+
+        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
 
         $api->assertSuccessful();
 
-        $this->assertDatabaseHas('branches', $branch->toArray());
+        $updatedBranch['code'] = $api->json('data')['code'];
+
+        // $this->assertDatabaseHas('branches', $updatedBranch);
+        $this->assertDatabaseHas(
+            'branches', Arr::except($updatedBranch, ['images'])
+        );
+
+        foreach ($api['data']['images'] as $image) {
+            $this->assertTrue(Storage::disk('public')->exists($image));
+        }
     }
 
-    public function test_branch_api_call_update_main_branch_is_true_expect_successful()
+    public function test_branch_api_call_update_with_random_code_and_main_branch_is_true_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -121,7 +160,10 @@ class BranchAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_main' => true]);
+        $this->assertDatabaseHas('branches', [
+            'id' => $branch->id,
+            'is_main' => true,
+        ]);
 
         $count = Branch::where([
             ['id', '!=', $branch->id],
@@ -131,7 +173,7 @@ class BranchAPITest extends TestCase
         $this->assertTrue($count == 0);
     }
 
-    public function test_branch_api_call_update_main_branch_is_false_expect_successful()
+    public function test_branch_api_call_update_with_random_code_and_main_branch_is_false_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -151,7 +193,7 @@ class BranchAPITest extends TestCase
         $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_main' => false]);
     }
 
-    public function test_branch_api_call_update_active_branch_is_true_expect_successful()
+    public function test_branch_api_call_update_with_random_code_and_active_branch_is_true_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -171,7 +213,7 @@ class BranchAPITest extends TestCase
         $this->assertDatabaseHas('branches', ['id' => $branch->id, 'is_active' => true]);
     }
 
-    public function test_branch_api_call_update_active_branch_is_false_expect_successful()
+    public function test_branch_api_call_update_with_random_code_and_active_branch_is_false_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

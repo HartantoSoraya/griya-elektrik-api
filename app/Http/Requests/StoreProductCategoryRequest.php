@@ -14,16 +14,22 @@ class StoreProductCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'parent_id' => 'nullable|exists:product_categories,id',
             'code' => 'required|string|max:255|unique:product_categories,code',
-            'name' => 'required', 'max:255', 'string',
+            'name' => 'required|max:255|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'slug' => 'nullable|string|max:255|unique:product_categories,slug',
         ];
     }
 
     public function prepareForValidation()
     {
-        $this->merge([
-            'slug' => '',
-        ]);
+        if (! $this->has('parent_id')) {
+            $this->merge(['parent_id' => null]);
+        }
+
+        if (! $this->has('slug')) {
+            $this->merge(['slug' => null]);
+        }
     }
 }

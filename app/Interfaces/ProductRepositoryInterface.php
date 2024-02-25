@@ -19,4 +19,6 @@ interface ProductRepositoryInterface
     public function generateCode(int $tryCount);
 
     public function isUniqueCode(string $code, ?string $expectId = null);
+
+    public function isUniqueSlug(string $slug, ?string $expectId = null);
 }

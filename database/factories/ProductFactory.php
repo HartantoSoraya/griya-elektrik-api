@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 class ProductFactory extends Factory
@@ -22,13 +23,28 @@ class ProductFactory extends Factory
      */
     public function definition()
     {
+        $code = Str::upper(Str::random(10));
+        $name = $this->faker->word;
+
         return [
-            'code' => Str::upper(Str::random(10)),
-            'name' => $this->faker->word,
+            'code' => $code,
+            'name' => $name,
+            'thumbnail' => UploadedFile::fake()->image('thumbnail.jpg'),
             'description' => $this->faker->sentence,
             'price' => $this->faker->numberBetween(100, 1000),
             'is_active' => $this->faker->boolean,
-            'slug' => '',
+            'slug' => Str::slug($name.'-'.$code),
         ];
+    }
+
+    public function setRandomSlug()
+    {
+        return $this->state(function () {
+            $slug = Str::slug($this->faker->unique()->word);
+
+            return [
+                'slug' => $slug,
+            ];
+        });
     }
 }

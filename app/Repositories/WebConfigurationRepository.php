@@ -15,7 +15,11 @@ class WebConfigurationRepository implements WebConfigurationRepositoryInterface
     public function updateWebConfiguration(array $data)
     {
         $webConfiguration = WebConfiguration::first();
+        $webConfiguration->title = $data['title'];
+        $webConfiguration->description = $data['description'];
+        $webConfiguration->logo = $data['logo']->store('assets/web-configurations', 'public');
+        $webConfiguration->save();
 
-        return $webConfiguration->update($data);
+        return $webConfiguration;
     }
 }

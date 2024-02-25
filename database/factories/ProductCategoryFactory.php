@@ -81,11 +81,14 @@ class ProductCategoryFactory extends Factory
     {
         $productCategories = $this->flattenArray($this->productCategories);
 
+        $code = Str::upper(Str::random(10));
+        $name = $productCategories[array_rand($productCategories)];
+
         return [
-            'code' => Str::upper(Str::random(10)),
-            'name' => $productCategories[array_rand($productCategories)],
-            'image' => UploadedFile::fake()->image('avatar.jpg'),
-            'slug' => '',
+            'code' => $code,
+            'name' => $name,
+            'image' => UploadedFile::fake()->image('image.jpg'),
+            'slug' => Str::slug($name.'-'.$code),
         ];
     }
 

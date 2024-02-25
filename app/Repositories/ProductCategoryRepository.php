@@ -40,14 +40,27 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 
     public function createCategory(array $data)
     {
-        return ProductCategory::create($data);
+        $productCategory = new ProductCategory();
+        $productCategory->parent_id = $data['parent_id'];
+        $productCategory->code = $data['code'];
+        $productCategory->name = $data['name'];
+        $productCategory->image = $data['image']->store('assets/product-categories', 'public');
+        $productCategory->slug = $data['slug'];
+        $productCategory->save();
+
+        return $productCategory;
     }
 
     public function updateCategory(string $id, array $data)
     {
         $productCategory = ProductCategory::find($id);
 
-        $productCategory->update($data);
+        $productCategory->parent_id = $data['parent_id'];
+        $productCategory->code = $data['code'];
+        $productCategory->name = $data['name'];
+        $productCategory->image = $data['image']->store('assets/product-categories', 'public');
+        $productCategory->slug = $data['slug'];
+        $productCategory->save();
 
         return $productCategory;
     }
@@ -72,6 +85,21 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         }
 
         $result = ProductCategory::where('code', $code);
+
+        if ($expectId) {
+            $result = $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0 ? true : false;
+    }
+
+    public function isUniqueSlug(string $slug, ?string $expectId = null): bool
+    {
+        if (ProductCategory::count() == 0) {
+            return true;
+        }
+
+        $result = ProductCategory::where('slug', $slug);
 
         if ($expectId) {
             $result = $result->where('id', '!=', $expectId);

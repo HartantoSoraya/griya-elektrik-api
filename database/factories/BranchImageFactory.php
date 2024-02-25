@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
@@ -17,7 +18,7 @@ class BranchImageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'image' => UploadedFile::fake()->image('branch.jpg'),
         ];
     }
 }

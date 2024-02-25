@@ -15,14 +15,15 @@ class StoreProductBrandRequest extends FormRequest
     {
         return [
             'code' => 'required|string|max:255|unique:product_brands,code',
-            'name' => 'required|max:255|string',
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:product_brands,slug',
         ];
     }
 
     public function prepareForValidation()
     {
-        $this->merge([
-            'slug' => '',
-        ]);
+        if (! $this->has('slug')) {
+            $this->merge(['slug' => null]);
+        }
     }
 }

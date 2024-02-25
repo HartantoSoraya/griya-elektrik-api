@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\WebConfiguration;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 
 class WebConfigurationFactory extends Factory
 {
@@ -24,8 +25,7 @@ class WebConfigurationFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'description' => $this->faker->paragraph,
-            // 'logo' => $this->faker->imageUrl(),
-            'logo' => '',
+            'logo' => UploadedFile::fake()->image('logo.jpg'),
         ];
     }
 }

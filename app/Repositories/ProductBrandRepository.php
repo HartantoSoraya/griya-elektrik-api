@@ -58,4 +58,19 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
 
         return $result->count() == 0;
     }
+
+    public function isUniqueSlug(string $slug, ?string $expectId = null): bool
+    {
+        if (ProductBrand::count() == 0) {
+            return true;
+        }
+
+        $result = ProductBrand::where('slug', $slug);
+
+        if ($expectId) {
+            $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0;
+    }
 }

@@ -37,8 +37,10 @@ class BannerController extends Controller
      */
     public function store(StoreBannerRequest $request)
     {
+        $request = $request->validated();
+
         try {
-            $banners = $this->bannerRepository->createBanner($request->all());
+            $banners = $this->bannerRepository->createBanner($request);
 
             return ResponseHelper::jsonResponse(true, 'Banners created successfully', new BannerResource($banners), 201);
         } catch (\Exception $e) {
@@ -54,7 +56,7 @@ class BannerController extends Controller
         try {
             $banner = $this->bannerRepository->getBannerById($id);
 
-            if (!$banner) {
+            if (! $banner) {
                 return ResponseHelper::jsonResponse(false, 'Banner not found', [], 404);
             }
 
@@ -69,6 +71,8 @@ class BannerController extends Controller
      */
     public function update(UpdateBannerRequest $request, string $id)
     {
+        $request = $request->validated();
+
         try {
             $this->bannerRepository->updateBanner($request->all(), $id);
 

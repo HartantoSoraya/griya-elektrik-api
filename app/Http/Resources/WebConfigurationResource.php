@@ -17,6 +17,7 @@ class WebConfigurationResource extends JsonResource
         return [
             'title' => $this->title,
             'description' => $this->description,
+            'logo' => $this->logo,
             'logo_url' => $this->logo ? asset('storage/'.$this->logo) : '',
         ];
     }

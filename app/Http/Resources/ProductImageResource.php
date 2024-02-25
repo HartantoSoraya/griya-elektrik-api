@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BranchImageResource extends JsonResource
+class ProductImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,7 +16,7 @@ class BranchImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'branch' => $this->branch,
+            'product' => $this->product,
             'image' => $this->image,
             'image_url' => $this->image ? asset('storage/'.$this->image) : '',
         ];

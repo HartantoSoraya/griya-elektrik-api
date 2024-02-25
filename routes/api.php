@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('web_configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'index']);
+Route::get('web-configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'index']);
 
 Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
@@ -34,7 +34,7 @@ Route::get('products/{id}', [App\Http\Controllers\Api\ProductController::class, 
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('web_configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'update']);
+    Route::post('web-configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'update']);
 
     Route::post('branches', [App\Http\Controllers\Api\BranchController::class, 'store']);
     Route::post('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'update']);

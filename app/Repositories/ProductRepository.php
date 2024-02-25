@@ -24,25 +24,24 @@ class ProductRepository implements ProductRepositoryInterface
         DB::beginTransaction();
 
         try {
-            // $product = Product::create($data);
-
             $product = new Product();
             $product->code = $data['code'];
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
+            $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->is_active = $data['is_active'];
             $product->slug = $data['slug'];
-            $product->thumbnail = $data['thumbnail']->store('assets/products', 'public');
             $product->save();
 
             if (isset($data['product_images'])) {
                 foreach ($data['product_images'] as $image) {
-                    $product->productImages()->create([
-                        'image' => $image,
-                    ]);
+                    $productImage = new ProductImage();
+                    $productImage->product_id = $product->id;
+                    $productImage->image = $image->store('assets/products/images', 'public');
+                    $productImage->save();
                 }
             }
 
@@ -58,12 +57,6 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function updateProduct(string $id, array $data)
     {
-        // $product = Product::find($id);
-
-        // $product->update($data);
-
-        // return $product;
-
         DB::beginTransaction();
 
         try {
@@ -72,22 +65,20 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
+            $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->is_active = $data['is_active'];
             $product->slug = $data['slug'];
-
-            if (isset($data['thumbnail'])) {
-                $product->thumbnail = $data['thumbnail']->store('assets/products', 'public');
-            }
-
             $product->save();
 
+            $product->productImages()->delete();
             if (isset($data['product_images'])) {
                 foreach ($data['product_images'] as $image) {
-                    $product->productImages()->create([
-                        'image' => $image,
-                    ]);
+                    $productImage = new ProductImage();
+                    $productImage->product_id = $product->id;
+                    $productImage->image = $image->store('assets/products/images', 'public');
+                    $productImage->save();
                 }
             }
 
@@ -126,6 +117,21 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         $result = Product::where('code', $code);
+
+        if ($expectId) {
+            $result = $result->where('id', '!=', $expectId);
+        }
+
+        return $result->count() == 0 ? true : false;
+    }
+
+    public function isUniqueSlug(string $slug, ?string $expectId = null): bool
+    {
+        if (Product::count() == 0) {
+            return true;
+        }
+
+        $result = Product::where('slug', $slug);
 
         if ($expectId) {
             $result = $result->where('id', '!=', $expectId);
