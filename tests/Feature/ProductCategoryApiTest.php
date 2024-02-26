@@ -21,7 +21,7 @@ class ProductCategoryAPITest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_product_category_api_call_create_with_auto_code_and_empty_slug_expect_successfull()
+    public function test_product_category_api_call_create_with_auto_code_and_empty_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -53,7 +53,7 @@ class ProductCategoryAPITest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($productCategory['image']));
     }
 
-    public function test_product_category_api_call_create_with_random_code_and_slug_expect_successfull()
+    public function test_product_category_api_call_create_with_random_code_and_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -80,7 +80,7 @@ class ProductCategoryAPITest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($productCategory['image']));
     }
 
-    public function test_product_category_api_call_create_with_random_code_and_slug_and_childs_expect_successfull()
+    public function test_product_category_api_call_create_with_random_code_and_slug_and_childs_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -192,7 +192,7 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $productCategory = ProductCategory::factory()->count(3)->create();
+        $productCategories = ProductCategory::factory()->count(3)->create();
 
         $api = $this->json('GET', 'api/v1/product-categories');
 
@@ -200,7 +200,7 @@ class ProductCategoryAPITest extends TestCase
 
         $api->assertJsonCount(3);
 
-        foreach ($productCategory as $category) {
+        foreach ($productCategories as $category) {
             $this->assertDatabaseHas(
                 'product_categories',
                 $category->toArray()
@@ -400,7 +400,7 @@ class ProductCategoryAPITest extends TestCase
         }
     }
 
-    public function test_product_category_api_call_update_with_auto_code_and_empty_slug_expect_successfull()
+    public function test_product_category_api_call_update_with_auto_code_and_empty_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -429,7 +429,7 @@ class ProductCategoryAPITest extends TestCase
         );
     }
 
-    public function test_product_category_api_call_update_with_random_code_and_slug_expect_successfull()
+    public function test_product_category_api_call_update_with_random_code_and_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -484,7 +484,7 @@ class ProductCategoryAPITest extends TestCase
         $api->assertStatus(422);
     }
 
-    public function test_product_category_api_call_delete_expect_successfull()
+    public function test_product_category_api_call_delete_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

@@ -74,9 +74,9 @@ class BannerController extends Controller
         $request = $request->validated();
 
         try {
-            $this->bannerRepository->updateBanner($request->all(), $id);
+            $banner = $this->bannerRepository->updateBanner($request, $id);
 
-            return ResponseHelper::jsonResponse(true, 'Banners updated successfully', [], 200);
+            return ResponseHelper::jsonResponse(true, 'Banners updated successfully', new BannerResource($banner), 200);
         } catch (\Exception $e) {
             return ResponseHelper::jsonResponse(false, $e->getMessage(), [], 500);
         }
