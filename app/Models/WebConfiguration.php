@@ -15,11 +15,4 @@ class WebConfiguration extends Model
         'description',
         'logo',
     ];
-
-    public function setLogoAttribute($value)
-    {
-        if ($value) {
-            $this->attributes['logo'] = $value->store('assets/web-configurations', 'public');
-        }
-    }
 }

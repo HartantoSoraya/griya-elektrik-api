@@ -4,11 +4,19 @@ namespace Tests\Feature;
 
 use App\Models\ProductBrand;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProductBrandAPITest extends TestCase
 {
-    public function test_product_brand_api_call_create_with_auto_code_expect_successfull()
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
+
+    public function test_product_brand_api_call_create_with_auto_code_and_empty_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -19,7 +27,10 @@ class ProductBrandAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $productBrand = ProductBrand::factory()->make(['code' => 'AUTO'])->toArray();
+        $productBrand = ProductBrand::factory()->make([
+            'code' => 'AUTO',
+            'slug' => '',
+        ])->toArray();
 
         $api = $this->json('POST', 'api/v1/product-brands', $productBrand);
 
@@ -33,7 +44,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_create_with_random_code_expect_successfull()
+    public function test_product_brand_api_call_create_with_random_code_and_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -55,7 +66,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_create_with_existing_code_expect_failure()
+    public function test_product_brand_api_call_create_with_existing_code_and_slug_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -101,7 +112,7 @@ class ProductBrandAPITest extends TestCase
         }
     }
 
-    public function test_product_brand_api_call_update_with_auto_code_expect_successfull()
+    public function test_product_brand_api_call_update_with_auto_code_and_empty_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -128,7 +139,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_update_with_random_code_expect_successfull()
+    public function test_product_brand_api_call_update_with_random_code_and_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -152,7 +163,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_update_with_existing_code_expect_failure()
+    public function test_product_brand_api_call_update_with_existing_code_and_random_slug_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

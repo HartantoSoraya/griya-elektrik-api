@@ -21,9 +21,4 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
-
-    public function setImageAttribute($value)
-    {
-        $this->attributes['image'] = $value->store('assets/products', 'public');
-    }
 }

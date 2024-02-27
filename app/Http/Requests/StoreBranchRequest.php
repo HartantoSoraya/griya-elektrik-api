@@ -27,6 +27,13 @@ class StoreBranchRequest extends FormRequest
             'sort' => 'required|integer',
             'is_main' => 'required|boolean',
             'is_active' => 'required|boolean',
+            'branch_images' => 'nullable|array',
+            'branch_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
+    }
+
+    public function prepareForValidation()
+    {
+
     }
 }

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Http\UploadedFile;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Banner>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProductImage>
  */
-class BannerFactory extends Factory
+class ProductImageFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,7 +18,7 @@ class BannerFactory extends Factory
     public function definition(): array
     {
         return [
-            'image' => UploadedFile::fake()->image('banner.jpg'),
+            'image' => UploadedFile::fake()->image('product.jpg'),
         ];
     }
 }

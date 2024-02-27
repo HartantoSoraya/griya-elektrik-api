@@ -8,6 +8,7 @@ use App\Http\Requests\StoreProductBrandRequest;
 use App\Http\Requests\UpdateProductBrandRequest;
 use App\Http\Resources\ProductBrandResource;
 use App\Interfaces\ProductBrandRepositoryInterface;
+use Illuminate\Support\Str;
 
 class ProductBrandController extends Controller
 {
@@ -42,6 +43,8 @@ class ProductBrandController extends Controller
      * */
     public function store(StoreProductBrandRequest $request)
     {
+        $request = $request->validated();
+
         try {
             $code = $request['code'];
             if ($code == 'AUTO') {
@@ -53,7 +56,17 @@ class ProductBrandController extends Controller
                 $request['code'] = $code;
             }
 
-            $productBrand = $this->productBrand->createBrand($request->all());
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->productBrand->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
+            }
+
+            $productBrand = $this->productBrand->createBrand($request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductBrandResource($productBrand), 200);
         } catch (\Exception $exception) {
@@ -90,6 +103,8 @@ class ProductBrandController extends Controller
      * */
     public function update(UpdateProductBrandRequest $request, $id)
     {
+        $request = $request->validated();
+
         try {
             $code = $request['code'];
             if ($code == 'AUTO') {
@@ -101,7 +116,17 @@ class ProductBrandController extends Controller
                 $request['code'] = $code;
             }
 
-            $productBrand = $this->productBrand->updateBrand($id, $request->all());
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->productBrand->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
+            }
+
+            $productBrand = $this->productBrand->updateBrand($id, $request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductBrandResource($productBrand), 200);
         } catch (\Exception $exception) {

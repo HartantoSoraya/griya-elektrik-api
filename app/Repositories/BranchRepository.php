@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\BranchRepositoryInterface;
 use App\Models\Branch;
+use App\Models\BranchImage;
 use Illuminate\Support\Facades\DB;
 
 class BranchRepository implements BranchRepositoryInterface
@@ -25,42 +26,81 @@ class BranchRepository implements BranchRepositoryInterface
 
     public function createBranch(array $data)
     {
-        DB::beginTransaction();
+        try {
+            DB::beginTransaction();
 
-        $branch = Branch::create([
-            'code' => $data['code'],
-            'name' => $data['name'],
-            'map' => $data['map'],
-            'address' => $data['address'],
-            'city' => $data['city'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'facebook' => $data['facebook'],
-            'instagram' => $data['instagram'],
-            'youtube' => $data['youtube'],
-            'sort' => $data['sort'],
-            'is_main' => $data['is_main'],
-            'is_active' => $data['is_active'],
-        ]);
-
-        foreach ($data['branch_images'] as $image) {
-            $branch->branchImages()->create([
-                'image' => $image,
+            $branch = Branch::create([
+                'code' => $data['code'],
+                'name' => $data['name'],
+                'map' => $data['map'],
+                'address' => $data['address'],
+                'city' => $data['city'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'facebook' => $data['facebook'],
+                'instagram' => $data['instagram'],
+                'youtube' => $data['youtube'],
+                'sort' => $data['sort'],
+                'is_main' => $data['is_main'],
+                'is_active' => $data['is_active'],
             ]);
+
+            if (isset($data['branch_images'])) {
+                foreach ($data['branch_images'] as $image) {
+                    $branchImage = new BranchImage();
+                    $branchImage->branch_id = $branch->id;
+                    $branchImage->image = $image->store('assets/branches/images', 'public');
+                    $branchImage->save();
+                }
+            }
+
+            DB::commit();
+
+            return $branch;
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
         }
-
-        DB::commit();
-
-        return $branch;
     }
 
     public function updateBranch(string $id, array $data)
     {
-        $branch = Branch::find($id);
+        try {
+            DB::beginTransaction();
 
-        $branch->update($data);
+            $branch = Branch::find($id);
+            $branch->code = $data['code'];
+            $branch->name = $data['name'];
+            $branch->map = $data['map'];
+            $branch->address = $data['address'];
+            $branch->city = $data['city'];
+            $branch->email = $data['email'];
+            $branch->phone = $data['phone'];
+            $branch->facebook = $data['facebook'];
+            $branch->instagram = $data['instagram'];
+            $branch->youtube = $data['youtube'];
+            $branch->sort = $data['sort'];
+            $branch->is_main = $data['is_main'];
+            $branch->is_active = $data['is_active'];
+            $branch->save();
 
-        return $branch;
+            $branch->branchImages()->delete();
+            if (isset($data['branch_images'])) {
+                foreach ($data['branch_images'] as $image) {
+                    $branchImage = new BranchImage();
+                    $branchImage->branch_id = $branch->id;
+                    $branchImage->image = $image->store('assets/branches/images', 'public');
+                    $branchImage->save();
+                }
+            }
+
+            DB::commit();
+
+            return $branch;
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
     }
 
     public function updateMainBranch(string $id, bool $isMain)

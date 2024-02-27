@@ -16,7 +16,7 @@ class UpdateWebConfigurationRequest extends FormRequest
         return [
             'title' => 'required|max:255|string',
             'description' => 'required|max:255|string',
-            'logo' => 'nullable|string',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 }

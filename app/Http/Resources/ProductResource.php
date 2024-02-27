@@ -19,7 +19,7 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'is_active' => $this->is_active,
-            'product_images' => $this->productImages,
+            'product_images' => ProductImageResource::collection($this->productImages),
         ];
     }
 }

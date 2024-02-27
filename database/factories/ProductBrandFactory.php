@@ -17,10 +17,13 @@ class ProductBrandFactory extends Factory
      */
     public function definition(): array
     {
+        $code = Str::upper(Str::random(10));
+        $name = $this->faker->word;
+
         return [
             'code' => Str::upper(Str::random(10)),
             'name' => $this->faker->unique()->word,
-            'slug' => '',
+            'slug' => Str::slug($name.'-'.$code),
         ];
     }
 }

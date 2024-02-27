@@ -21,9 +21,4 @@ class BranchImage extends Model
     {
         return $this->belongsTo(Branch::class);
     }
-
-    public function setImageAttribute($value)
-    {
-        $this->attributes['image'] = $value->store('assets/branches', 'public');
-    }
 }

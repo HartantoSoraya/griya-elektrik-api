@@ -5,12 +5,22 @@ namespace Tests\Feature;
 use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductCategory;
+use App\Models\ProductImage;
 use App\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProductAPITest extends TestCase
 {
-    public function test_product_api_call_create_with_auto_code_expect_successfull()
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
+
+    public function test_product_api_call_create_with_auto_code_and_empty_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -28,21 +38,37 @@ class ProductAPITest extends TestCase
         $product = Product::factory()
             ->for($productCategory, 'category')
             ->for($productBrand, 'brand')
-            ->make(['code' => 'AUTO'])->toArray();
+            ->make([
+                'code' => 'AUTO',
+                'slug' => '',
+            ])->toArray();
+
+        $productImages = [];
+        for ($i = 0; $i < 3; $i++) {
+            array_push($productImages, ProductImage::factory()->make()->image);
+        }
+        $product['product_images'] = $productImages;
 
         $api = $this->json('POST', 'api/v1/products', $product);
 
         $api->assertSuccessful();
 
         $product['code'] = $api['data']['code'];
+        $product['thumbnail'] = $api['data']['thumbnail'];
         $product['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
-            'products', $product
+            'products', Arr::except($product, ['product_images'])
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($product['thumbnail']));
+
+        foreach ($api['data']['product_images'] as $image) {
+            $this->assertTrue(Storage::disk('public')->exists($image['image']));
+        }
     }
 
-    public function test_product_api_call_create_with_random_code_expect_successfull()
+    public function test_product_api_call_create_with_random_code_and_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -66,12 +92,14 @@ class ProductAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $product['thumbnail'] = $api['data']['thumbnail'];
+
         $this->assertDatabaseHas(
             'products', $product
         );
     }
 
-    public function test_product_api_call_create_with_random_code_and_product_category_has_children_expect_failure()
+    public function test_product_api_call_create_with_random_code_and_slug_and_product_category_has_children_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -98,7 +126,7 @@ class ProductAPITest extends TestCase
         $api->assertStatus(400);
     }
 
-    public function test_product_api_call_create_with_existing_code_expect_failure()
+    public function test_product_api_call_create_with_existing_code_and_random_slug_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -162,7 +190,50 @@ class ProductAPITest extends TestCase
         }
     }
 
-    public function test_product_api_call_update_with_random_code_expect_successfull()
+    public function test_product_api_call_update_with_auto_code_and_empty_slug_expect_successfull()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $product = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->create();
+
+        $productUpdate = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make([
+                'code' => 'AUTO',
+                'slug' => '',
+            ])->toArray();
+
+        $api = $this->json('POST', 'api/v1/products/'.$product->id, $productUpdate);
+
+        $api->assertSuccessful();
+
+        $productUpdate['code'] = $api['data']['code'];
+        $productUpdate['thumbnail'] = $api['data']['thumbnail'];
+        $productUpdate['slug'] = $api['data']['slug'];
+
+        $this->assertDatabaseHas(
+            'products', $productUpdate
+        );
+
+        $this->assertTrue(Storage::disk('public')->exists($productUpdate['thumbnail']));
+    }
+
+    public function test_product_api_call_update_with_random_code_and_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -195,49 +266,16 @@ class ProductAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $this->assertDatabaseHas(
-            'products', $productUpdate
-        );
-    }
-
-    public function test_product_api_call_update_with_auto_code_expect_successfull()
-    {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
-
-        $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
-        $productCategory = ProductCategory::factory()->create();
-
-        $productBrand = ProductBrand::factory()->create();
-
-        $product = Product::factory()
-            ->for($productCategory, 'category')
-            ->for($productBrand, 'brand')
-            ->create();
-
-        $productUpdate = Product::factory()
-            ->for($productCategory, 'category')
-            ->for($productBrand, 'brand')
-            ->make(['code' => 'AUTO'])->toArray();
-
-        $api = $this->json('POST', 'api/v1/products/'.$product->id, $productUpdate);
-
-        $api->assertSuccessful();
-
-        $productUpdate['code'] = $api['data']['code'];
-        $productUpdate['slug'] = $api['data']['slug'];
+        $productUpdate['thumbnail'] = $api['data']['thumbnail'];
 
         $this->assertDatabaseHas(
             'products', $productUpdate
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($productUpdate['thumbnail']));
     }
 
-    public function test_product_api_call_update_with_existing_code_in_same_product_and_product_category_has_children_expect_failure()
+    public function test_product_api_call_update_with_existing_code_in_same_product_and_random_slug_and_product_category_has_children_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -273,7 +311,7 @@ class ProductAPITest extends TestCase
         $api->assertStatus(400);
     }
 
-    public function test_product_api_call_update_with_existing_code_in_same_product_expect_successfull()
+    public function test_product_api_call_update_with_existing_code_in_same_product_and_random_slug_expect_successfull()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -302,12 +340,16 @@ class ProductAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $productUpdate['thumbnail'] = $api['data']['thumbnail'];
+
         $this->assertDatabaseHas(
             'products', $productUpdate
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($productUpdate['thumbnail']));
     }
 
-    public function test_product_api_call_update_with_existing_code_in_different_product_expect_failure()
+    public function test_product_api_call_update_with_existing_code_in_different_product_and_random_slug_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

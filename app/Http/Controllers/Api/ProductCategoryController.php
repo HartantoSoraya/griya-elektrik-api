@@ -76,7 +76,17 @@ class ProductCategoryController extends Controller
      * */
     public function store(StoreProductCategoryRequest $request)
     {
+        $request = $request->validated();
+
         try {
+            if (isset($request['parent_id'])) {
+                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+
+                if ($parentCategory && $parentCategory->products()->exists()) {
+                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                }
+            }
+
             $code = $request['code'];
             if ($code == 'AUTO') {
                 $tryCount = 1;
@@ -87,17 +97,17 @@ class ProductCategoryController extends Controller
                 $request['code'] = $code;
             }
 
-            if ($request->has('parent_id')) {
-                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
-
-                if ($parentCategory && $parentCategory->products()->exists()) {
-                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
-                }
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->productCategory->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
             }
 
-            $request['slug'] = Str::slug($request['name'].$request['code']);
-
-            $productCategory = $this->productCategory->createCategory($request->all());
+            $productCategory = $this->productCategory->createCategory($request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductCategoryResource($productCategory), 200);
         } catch (\Exception $exception) {
@@ -135,7 +145,19 @@ class ProductCategoryController extends Controller
      * */
     public function update(UpdateProductCategoryRequest $request, $id)
     {
+        $request = $request->validated();
+
         try {
+            if (isset($request['parent_id'])) {
+                if ($request['parent_id']) {
+                    $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+
+                    if ($parentCategory && $parentCategory->products()->exists()) {
+                        return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                    }
+                }
+            }
+
             $code = $request['code'];
             if ($code == 'AUTO') {
                 $tryCount = 1;
@@ -146,17 +168,17 @@ class ProductCategoryController extends Controller
                 $request['code'] = $code;
             }
 
-            if ($request->has('parent_id')) {
-                if ($request['parent_id']) {
-                    $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
-
-                    if ($parentCategory && $parentCategory->products()->exists()) {
-                        return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
-                    }
-                }
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->productCategory->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
             }
 
-            $productCategory = $this->productCategory->updateCategory($id, $request->all());
+            $productCategory = $this->productCategory->updateCategory($id, $request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductCategoryResource($productCategory), 200);
         } catch (\Exception $exception) {

@@ -36,10 +36,12 @@ class WebConfigurationController extends Controller
      */
     public function update(UpdateWebConfigurationRequest $request)
     {
-        try {
-            $this->webConfigurationRepository->updateWebConfiguration($request->all());
+        $request = $request->validated();
 
-            return ResponseHelper::jsonResponse(true, 'Web Configurations updated successfully', [], 200);
+        try {
+            $webConfiguration = $this->webConfigurationRepository->updateWebConfiguration($request);
+
+            return ResponseHelper::jsonResponse(true, 'Web Configurations updated successfully', new WebConfigurationResource($webConfiguration), 200);
         } catch (\Exception $e) {
             return ResponseHelper::jsonResponse(false, $e->getMessage(), [], 500);
         }

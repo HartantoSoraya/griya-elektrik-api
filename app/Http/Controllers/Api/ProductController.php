@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\ProductCategory;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -43,6 +44,8 @@ class ProductController extends Controller
      * */
     public function store(StoreProductRequest $request)
     {
+        $request = $request->validated();
+
         try {
             $code = $request['code'];
             if ($code == 'AUTO') {
@@ -59,7 +62,17 @@ class ProductController extends Controller
                 return ResponseHelper::jsonResponse(false, 'Cannot use product category with children. Please remove the children first.', null, 400);
             }
 
-            $product = $this->product->createProduct($request->all());
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->product->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
+            }
+
+            $product = $this->product->createProduct($request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
         } catch (\Exception $exception) {
@@ -97,6 +110,8 @@ class ProductController extends Controller
      * */
     public function update(UpdateProductRequest $request, $id)
     {
+        $request = $request->validated();
+
         try {
             $code = $request['code'];
             if ($code == 'AUTO') {
@@ -113,7 +128,17 @@ class ProductController extends Controller
                 return ResponseHelper::jsonResponse(false, 'Cannot use product category with children. Please remove the children first.', null, 400);
             }
 
-            $product = $this->product->updateProduct($id, $request->all());
+            if ($request['slug'] == '') {
+                $slug = Str::slug($request['name'].$request['code']);
+                $tryCount = 1;
+                do {
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $tryCount++;
+                } while (! $this->product->isUniqueSlug($uniqueSlug));
+                $request['slug'] = $uniqueSlug;
+            }
+
+            $product = $this->product->updateProduct($id, $request);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
         } catch (\Exception $exception) {

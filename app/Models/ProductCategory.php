@@ -59,9 +59,4 @@ class ProductCategory extends Model
     {
         return self::doesntHave('products')->get();
     }
-
-    public function setImageAttribute($value)
-    {
-        $this->attributes['image'] = $value->store('assets/product-categories', 'public');
-    }
 }
