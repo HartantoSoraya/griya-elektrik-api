@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Interfaces\BannerRepositoryInterface;
+use App\Interfaces\BranchImageRepositoryInterface;
 use App\Interfaces\BranchRepositoryInterface;
 use App\Interfaces\ProductBrandRepositoryInterface;
 use App\Interfaces\ProductCategoryRepositoryInterface;
@@ -10,6 +11,7 @@ use App\Interfaces\ProductLinkRepositoryInterface;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Interfaces\WebConfigurationRepositoryInterface;
 use App\Repositories\BannerRepository;
+use App\Repositories\BranchImageRepository;
 use App\Repositories\BranchRepository;
 use App\Repositories\ProductBrandRepository;
 use App\Repositories\ProductCategoryRepository;
