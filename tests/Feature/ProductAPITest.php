@@ -188,7 +188,7 @@ class ProductAPITest extends TestCase
 
         $productBrand = ProductBrand::factory()->create();
 
-        $product = Product::factory()
+        $products = Product::factory()
             ->for($productCategory, 'category')
             ->for($productBrand, 'brand')
             ->count(3)
@@ -200,9 +200,9 @@ class ProductAPITest extends TestCase
 
         $api->assertJsonCount(3);
 
-        foreach ($product as $item) {
+        foreach ($products as $product) {
             $this->assertDatabaseHas(
-                'products', $item->toArray()
+                'products', $product->toArray()
             );
         }
     }
