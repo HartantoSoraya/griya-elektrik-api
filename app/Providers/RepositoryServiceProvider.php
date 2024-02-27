@@ -30,6 +30,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WebConfigurationRepositoryInterface::class, WebConfigurationRepository::class);
         $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
         $this->app->bind(BranchRepositoryInterface::class, BranchRepository::class);
+        $this->app->bind(BranchImageRepositoryInterface::class, BranchImageRepository::class);
         $this->app->bind(ProductCategoryRepositoryInterface::class, ProductCategoryRepository::class);
         $this->app->bind(ProductBrandRepositoryInterface::class, ProductBrandRepository::class);
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
