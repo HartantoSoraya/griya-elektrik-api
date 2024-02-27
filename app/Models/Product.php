@@ -20,12 +20,14 @@ class Product extends Model
         'thumbnail',
         'description',
         'price',
+        'is_featured',
         'is_active',
         'slug',
     ];
 
     protected $casts = [
         'price' => 'integer',
+        'is_featured' => 'boolean',
         'is_active' => 'boolean',
     ];
 
@@ -42,5 +44,10 @@ class Product extends Model
     public function productImages()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function productLinks()
+    {
+        return $this->hasMany(ProductLink::class);
     }
 }

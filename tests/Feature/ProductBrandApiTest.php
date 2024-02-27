@@ -16,7 +16,7 @@ class ProductBrandAPITest extends TestCase
         Storage::fake('public');
     }
 
-    public function test_product_brand_api_call_create_with_auto_code_and_empty_slug_expect_successfull()
+    public function test_product_brand_api_call_create_with_auto_code_and_empty_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -44,7 +44,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_create_with_random_code_and_slug_expect_successfull()
+    public function test_product_brand_api_call_create_with_random_code_and_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -112,7 +112,7 @@ class ProductBrandAPITest extends TestCase
         }
     }
 
-    public function test_product_brand_api_call_update_with_auto_code_and_empty_slug_expect_successfull()
+    public function test_product_brand_api_call_update_with_auto_code_and_empty_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -139,7 +139,7 @@ class ProductBrandAPITest extends TestCase
         );
     }
 
-    public function test_product_brand_api_call_update_with_random_code_and_slug_expect_successfull()
+    public function test_product_brand_api_call_update_with_random_code_and_slug_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
@@ -186,7 +186,7 @@ class ProductBrandAPITest extends TestCase
         $api->assertStatus(422);
     }
 
-    public function test_product_brand_api_call_delete_expect_successfull()
+    public function test_product_brand_api_call_delete_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

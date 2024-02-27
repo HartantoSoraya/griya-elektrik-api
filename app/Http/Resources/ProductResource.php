@@ -19,8 +19,10 @@ class ProductResource extends JsonResource
             'thumbnail_url' => $this->thumbnail ? asset('storage/'.$this->thumbnail) : '',
             'description' => $this->description,
             'price' => $this->price,
+            'is_featured' => $this->is_featured,
             'is_active' => $this->is_active,
             'product_images' => ProductImageResource::collection($this->productImages),
+            'product_links' => ProductLinkResource::collection($this->productLinks),
         ];
     }
 }

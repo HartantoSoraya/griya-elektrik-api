@@ -29,7 +29,10 @@ Route::get('product-brands', [App\Http\Controllers\Api\ProductBrandController::c
 Route::get('product-brands/{id}', [App\Http\Controllers\Api\ProductBrandController::class, 'show']);
 
 Route::get('products', [App\Http\Controllers\Api\ProductController::class, 'index']);
+Route::get('products/active', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveProducts']);
+Route::get('products/active-featured', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveAndFeaturedProducts']);
 Route::get('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'show']);
+Route::get('products/slug/{slug}', [App\Http\Controllers\Api\ProductController::class, 'showBySlug']);
 
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
@@ -58,6 +61,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('products', [App\Http\Controllers\Api\ProductController::class, 'store']);
     Route::post('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'update']);
+    Route::post('products/{id}/active', [App\Http\Controllers\Api\ProductController::class, 'updateActiveProduct']);
+    Route::post('products/{id}/featured', [App\Http\Controllers\Api\ProductController::class, 'updateFeaturedProduct']);
     Route::delete('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'destroy']);
     route::delete('products/{id}/image', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
 });
