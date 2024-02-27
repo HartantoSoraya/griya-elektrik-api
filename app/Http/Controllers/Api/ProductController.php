@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\ProductCategory;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
@@ -29,6 +30,28 @@ class ProductController extends Controller
     {
         try {
             $products = $this->product->getAllProducts();
+
+            return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function readAllActiveProducts()
+    {
+        try {
+            $products = $this->product->getAllActiveProducts();
+
+            return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function readAllActiveAndFeaturedProducts()
+    {
+        try {
+            $products = $this->product->getAllActiveAndFeaturedProducts();
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
@@ -101,6 +124,21 @@ class ProductController extends Controller
         }
     }
 
+    public function readProductBySlug($slug)
+    {
+        try {
+            $product = $this->product->getProductBySlug($slug);
+
+            if ($product) {
+                return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
+            }
+
+            return ResponseHelper::jsonResponse(false, 'Data not found', null, 404);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -139,6 +177,28 @@ class ProductController extends Controller
             }
 
             $product = $this->product->updateProduct($id, $request);
+
+            return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function updateActiveProduct(Request $request, string $id)
+    {
+        try {
+            $product = $this->product->updateActiveProduct($id, $request->is_active);
+
+            return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function updateFeaturedProduct(Request $request, string $id)
+    {
+        try {
+            $product = $this->product->updateFeaturedProduct($id, $request->is_featured);
 
             return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
         } catch (\Exception $exception) {

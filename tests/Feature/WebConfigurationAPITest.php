@@ -30,7 +30,7 @@ class WebConfigurationAPITest extends TestCase
         $this->assertDatabaseHas('web_configurations', $webConfiguration->toArray());
     }
 
-    public function test_web_configuration_api_call_update_expect_successfull()
+    public function test_web_configuration_api_call_update_expect_successful()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);

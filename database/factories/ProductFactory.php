@@ -32,19 +32,9 @@ class ProductFactory extends Factory
             'thumbnail' => UploadedFile::fake()->image('thumbnail.jpg'),
             'description' => $this->faker->sentence,
             'price' => $this->faker->numberBetween(100, 1000),
+            'is_featured' => $this->faker->boolean,
             'is_active' => $this->faker->boolean,
             'slug' => Str::slug($name.'-'.$code),
         ];
-    }
-
-    public function setRandomSlug()
-    {
-        return $this->state(function () {
-            $slug = Str::slug($this->faker->unique()->word);
-
-            return [
-                'slug' => $slug,
-            ];
-        });
     }
 }
