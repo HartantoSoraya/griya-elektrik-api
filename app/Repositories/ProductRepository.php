@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function getAllProducts($search = null, $priceSort = null)
+    public function getAllProducts($search = null, $sort = null)
     {
         $query = Product::with('category', 'brand');
 
@@ -18,10 +18,14 @@ class ProductRepository implements ProductRepositoryInterface
             $query->where('name', 'like', '%'.$search.'%');
         }
 
-        if ($priceSort === 'asc') {
+        if ($sort === 'price_asc') {
             $query->orderBy('price', 'asc');
-        } elseif ($priceSort === 'desc') {
+        } elseif ($sort === 'price_desc') {
             $query->orderBy('price', 'desc');
+        } elseif ($sort === 'latest') {
+            $query->orderBy('created_at', 'desc');
+        } elseif ($sort === 'oldest') {
+            $query->orderBy('created_at', 'asc');
         }
 
         return $query->get();
