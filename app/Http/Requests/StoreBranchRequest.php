@@ -16,7 +16,8 @@ class StoreBranchRequest extends FormRequest
         return [
             'code' => 'required|string|max:255|unique:branches,code',
             'name' => 'required|string|max:255',
-            'map' => 'required|string|max:255',
+            'map_url' => 'required|string|max:255',
+            'iframe_map' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
@@ -34,6 +35,5 @@ class StoreBranchRequest extends FormRequest
 
     public function prepareForValidation()
     {
-
     }
 }

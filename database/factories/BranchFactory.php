@@ -20,7 +20,8 @@ class BranchFactory extends Factory
         return [
             'code' => Str::upper(Str::random(10)),
             'name' => $this->faker->unique()->word,
-            'map' => $this->faker->word,
+            'map_url' => $this->faker->word,
+            'iframe_map' => $this->faker->word,
             'address' => $this->faker->word,
             'city' => $this->faker->word,
             'email' => $this->faker->email,
