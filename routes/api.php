@@ -18,6 +18,8 @@ Route::get('web-configuration', [App\Http\Controllers\Api\WebConfigurationContro
 Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
+Route::get('branches/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
+Route::get('branches/active', [App\Http\Controllers\Api\BranchController::class, 'getAllActiveBranch']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);

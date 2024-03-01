@@ -14,11 +14,6 @@ class BranchRepository implements BranchRepositoryInterface
         return Branch::orderBy('sort', 'asc')->get();
     }
 
-    public function getAllActiveBranch()
-    {
-        return Branch::where('status', 1)->orderBy('sort', 'asc')->get();
-    }
-
     public function getBranchById(string $id)
     {
         return Branch::find($id);
@@ -126,6 +121,16 @@ class BranchRepository implements BranchRepositoryInterface
         $branch->save();
 
         return $branch;
+    }
+
+    public function getMainBranch()
+    {
+        return Branch::where('is_main', true)->first();
+    }
+
+    public function getActiveBranch()
+    {
+        return Branch::where('is_active', true)->get();
     }
 
     public function deleteBranch(string $id)
