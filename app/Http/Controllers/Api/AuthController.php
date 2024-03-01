@@ -11,7 +11,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        if (! Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt($request->only('email', 'password'))) {
 
             return response()->json([
                 'message' => 'Invalid login details',
@@ -36,5 +36,19 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'logout success',
         ]);
+    }
+
+    public function me()
+    {
+        if (Auth::check()) {
+            return response()->json([
+                'message' => 'User data',
+                'data' => Auth::user(),
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'You are not logged in',
+        ], 401);
     }
 }

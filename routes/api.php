@@ -65,4 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('products/{id}/featured', [App\Http\Controllers\Api\ProductController::class, 'updateFeaturedProduct']);
     Route::delete('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'destroy']);
     route::delete('products/{id}/image', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
+
+    Route::get('me', [App\Http\Controllers\Api\AuthController::class, 'me']);
 });
