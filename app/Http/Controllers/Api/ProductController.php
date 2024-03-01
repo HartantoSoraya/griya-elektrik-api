@@ -26,10 +26,13 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $products = $this->product->getAllProducts();
+            $search = $request->search ? $request->search : null;
+            $priceSort = $request->price_sort ? $request->price_sort : null;
+
+            $products = $this->product->getAllProducts($search, $priceSort);
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
