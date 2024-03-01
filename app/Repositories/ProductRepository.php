@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function getAllProducts($search = null, $sort = null)
+    public function getAllProducts($search = null, $sort = null, $category = null)
     {
         $query = Product::with('category', 'brand');
 
@@ -26,6 +26,10 @@ class ProductRepository implements ProductRepositoryInterface
             $query->orderBy('created_at', 'desc');
         } elseif ($sort === 'oldest') {
             $query->orderBy('created_at', 'asc');
+        }
+
+        if ($category) {
+            $query->where('product_category_id', $category);
         }
 
         return $query->get();
