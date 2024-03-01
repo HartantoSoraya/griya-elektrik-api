@@ -10,9 +10,21 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function getAllProducts()
+    public function getAllProducts($search = null, $priceSort = null)
     {
-        return Product::with('category', 'brand')->get();
+        $query = Product::with('category', 'brand');
+
+        if ($search) {
+            $query->where('name', 'like', '%'.$search.'%');
+        }
+
+        if ($priceSort === 'asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($priceSort === 'desc') {
+            $query->orderBy('price', 'desc');
+        }
+
+        return $query->get();
     }
 
     public function getAllActiveProducts()
