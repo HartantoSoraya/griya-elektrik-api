@@ -17,7 +17,7 @@ class StoreBranchRequest extends FormRequest
             'code' => 'required|string|max:255|unique:branches,code',
             'name' => 'required|string|max:255',
             'map_url' => 'required|string|max:255',
-            'iframe_map' => 'required|string|max:255',
+            'iframe_map' => 'required|string',
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',

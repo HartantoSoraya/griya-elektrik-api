@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('name');
             $table->string('map_url');
-            $table->string('iframe_map');
+            $table->longText('iframe_map');
             $table->string('address');
             $table->string('city');
             $table->string('email')->nullable();
