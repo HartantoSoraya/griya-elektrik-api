@@ -10,7 +10,14 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function getAllProducts($search = null, $sort = null, $category = null)
+    public function getAllProducts()
+    {
+        $query = Product::with('category', 'brand');
+
+        return $query->get();
+    }
+
+    public function getAllActiveProducts($search = null, $sort = null, $category = null)
     {
         $query = Product::with('category', 'brand');
 
@@ -32,12 +39,9 @@ class ProductRepository implements ProductRepositoryInterface
             $query->where('product_category_id', $category);
         }
 
-        return $query->get();
-    }
+        $query->where('is_active', true);
 
-    public function getAllActiveProducts()
-    {
-        return Product::with('category', 'brand')->where('is_active', true)->get();
+        return $query->get();
     }
 
     public function getAllActiveAndFeaturedProducts()

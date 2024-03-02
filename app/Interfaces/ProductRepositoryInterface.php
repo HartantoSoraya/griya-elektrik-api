@@ -4,9 +4,9 @@ namespace App\Interfaces;
 
 interface ProductRepositoryInterface
 {
-    public function getAllProducts($search = null, $sort = null, $category = null);
+    public function getAllProducts();
 
-    public function getAllActiveProducts();
+    public function getAllActiveProducts($search = null, $sort = null, $category = null);
 
     public function getAllActiveAndFeaturedProducts();
 
