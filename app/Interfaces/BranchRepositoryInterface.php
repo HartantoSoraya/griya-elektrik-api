@@ -6,8 +6,6 @@ interface BranchRepositoryInterface
 {
     public function getAllBranch();
 
-    public function getAllActiveBranch();
-
     public function getBranchById(string $id);
 
     public function createBranch(array $data);
@@ -17,6 +15,10 @@ interface BranchRepositoryInterface
     public function updateMainBranch(string $id, bool $isMain);
 
     public function updateActiveBranch(string $id, bool $isActive);
+
+    public function getMainBranch();
+
+    public function getActiveBranch();
 
     public function deleteBranch(string $id);
 

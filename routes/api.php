@@ -18,6 +18,8 @@ Route::get('web-configuration', [App\Http\Controllers\Api\WebConfigurationContro
 Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
+Route::get('branches/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
+Route::get('branches/active', [App\Http\Controllers\Api\BranchController::class, 'getAllActiveBranch']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);
@@ -32,7 +34,7 @@ Route::get('products', [App\Http\Controllers\Api\ProductController::class, 'inde
 Route::get('products/active', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveProducts']);
 Route::get('products/active-featured', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveAndFeaturedProducts']);
 Route::get('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'show']);
-Route::get('products/slug/{slug}', [App\Http\Controllers\Api\ProductController::class, 'showBySlug']);
+Route::get('products/slug/{slug}', [App\Http\Controllers\Api\ProductController::class, 'readProductBySlug']);
 
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
@@ -65,4 +67,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('products/{id}/featured', [App\Http\Controllers\Api\ProductController::class, 'updateFeaturedProduct']);
     Route::delete('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'destroy']);
     route::delete('products/{id}/image', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
+
+    Route::get('me', [App\Http\Controllers\Api\AuthController::class, 'me']);
 });

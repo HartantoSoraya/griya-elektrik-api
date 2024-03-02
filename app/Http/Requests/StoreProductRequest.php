@@ -29,11 +29,11 @@ class StoreProductRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if (! $this->has('parent_id')) {
+        if (!$this->has('parent_id')) {
             $this->merge(['parent_id' => null]);
         }
 
-        if (! $this->has('slug')) {
+        if (!$this->has('slug')) {
             $this->merge(['slug' => null]);
         }
     }

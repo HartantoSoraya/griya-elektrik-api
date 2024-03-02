@@ -15,7 +15,8 @@ class Branch extends Model
     protected $fillable = [
         'code',
         'name',
-        'map',
+        'map_url',
+        'iframe_map',
         'address',
         'city',
         'email',
@@ -31,6 +32,7 @@ class Branch extends Model
     protected $casts = [
         'is_main' => 'boolean',
         'is_active' => 'boolean',
+        'sort' => 'integer'
     ];
 
     public function branchImages()

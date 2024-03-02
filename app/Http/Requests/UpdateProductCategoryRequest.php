@@ -15,20 +15,20 @@ class UpdateProductCategoryRequest extends FormRequest
     {
         return [
             'parent_id' => 'nullable|exists:product_categories,id',
-            'code' => 'required|string|max:255|unique:product_categories,code,'.$this->route('id'),
+            'code' => 'required|string|max:255|unique:product_categories,code,' . $this->route('id'),
             'name' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'slug' => 'nullable|string|max:255|unique:product_categories,slug,'.$this->route('id'),
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'slug' => 'nullable|string|max:255|unique:product_categories,slug,' . $this->route('id'),
         ];
     }
 
     public function prepareForValidation()
     {
-        if (! $this->has('parent_id')) {
+        if (!$this->has('parent_id')) {
             $this->merge(['parent_id' => null]);
         }
 
-        if (! $this->has('slug')) {
+        if (!$this->has('slug')) {
             $this->merge(['slug' => null]);
         }
     }

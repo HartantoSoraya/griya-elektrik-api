@@ -53,7 +53,7 @@ class BranchController extends Controller
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->branch->isUniqueCode($code));
+                } while (!$this->branch->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -99,7 +99,7 @@ class BranchController extends Controller
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->branch->isUniqueCode($code, $id));
+                } while (!$this->branch->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 
@@ -116,7 +116,11 @@ class BranchController extends Controller
         try {
             $branch = $this->branch->updateMainBranch($id, $request->is_main);
 
-            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+            if ($request->is_main) {
+                return ResponseHelper::jsonResponse(true, 'Cabang Utama berhasil diubah', new BranchResource($branch), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Cabang Utama berhasil diubah', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
@@ -127,7 +131,33 @@ class BranchController extends Controller
         try {
             $branch = $this->branch->updateActiveBranch($id, $request->is_active);
 
+            if ($request->is_active) {
+                return ResponseHelper::jsonResponse(true, 'Cabang berhasil diaktifkan', new BranchResource($branch), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Cabang berhasil dinonaktifkan', new BranchResource($branch), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function readMainBranch()
+    {
+        try {
+            $branch = $this->branch->getMainBranch();
+
             return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
+    public function getAllActiveBranch()
+    {
+        try {
+            $branches = $this->branch->getActiveBranch();
+
+            return ResponseHelper::jsonResponse(true, 'Success', BranchResource::collection($branches), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }

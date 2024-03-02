@@ -58,7 +58,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->parent_id = $data['parent_id'];
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
-        $productCategory->image = $data['image']->store('assets/product-categories', 'public');
+        $productCategory->image = $data['image']->store('assets/product-categories', 'public') ?? $productCategory->image;
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 

@@ -15,7 +15,7 @@ class ProductRepository implements ProductRepositoryInterface
         $query = Product::with('category', 'brand');
 
         if ($search) {
-            $query->where('name', 'like', '%'.$search.'%');
+            $query->where('name', 'like', '%' . $search . '%');
         }
 
         if ($sort === 'price_asc') {
@@ -125,8 +125,11 @@ class ProductRepository implements ProductRepositoryInterface
             $product->slug = $data['slug'];
             $product->save();
 
-            $product->productImages()->delete();
+
             if (isset($data['product_images'])) {
+                $product->productImages()->delete();
+
+
                 foreach ($data['product_images'] as $image) {
                     $productImage = new ProductImage();
                     $productImage->product_id = $product->id;
@@ -135,8 +138,10 @@ class ProductRepository implements ProductRepositoryInterface
                 }
             }
 
-            $product->productLinks()->delete();
             if (isset($data['product_links'])) {
+                $product->productLinks()->delete();
+
+
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();
                     $productLink->product_id = $product->id;

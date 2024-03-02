@@ -14,11 +14,6 @@ class BranchRepository implements BranchRepositoryInterface
         return Branch::orderBy('sort', 'asc')->get();
     }
 
-    public function getAllActiveBranch()
-    {
-        return Branch::where('status', 1)->orderBy('sort', 'asc')->get();
-    }
-
     public function getBranchById(string $id)
     {
         return Branch::find($id);
@@ -32,7 +27,8 @@ class BranchRepository implements BranchRepositoryInterface
             $branch = Branch::create([
                 'code' => $data['code'],
                 'name' => $data['name'],
-                'map' => $data['map'],
+                'map_url' => $data['map_url'],
+                'iframe_map' => $data['iframe_map'],
                 'address' => $data['address'],
                 'city' => $data['city'],
                 'email' => $data['email'],
@@ -71,7 +67,8 @@ class BranchRepository implements BranchRepositoryInterface
             $branch = Branch::find($id);
             $branch->code = $data['code'];
             $branch->name = $data['name'];
-            $branch->map = $data['map'];
+            $branch->map_url = $data['map_url'];
+            $branch->iframe_map = $data['iframe_map'];
             $branch->address = $data['address'];
             $branch->city = $data['city'];
             $branch->email = $data['email'];
@@ -124,6 +121,16 @@ class BranchRepository implements BranchRepositoryInterface
         $branch->save();
 
         return $branch;
+    }
+
+    public function getMainBranch()
+    {
+        return Branch::where('is_main', true)->first();
+    }
+
+    public function getActiveBranch()
+    {
+        return Branch::where('is_active', true)->get();
     }
 
     public function deleteBranch(string $id)
