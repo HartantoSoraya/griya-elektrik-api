@@ -30,8 +30,8 @@ class ProductController extends Controller
     {
         try {
             $search = $request->search ? $request->search : null;
-            $sort = $request->sort? $request->sort: null;
-            $category = $request->category? $request->category: null;
+            $sort = $request->sort ? $request->sort : null;
+            $category = $request->category ? $request->category : null;
 
             $products = $this->product->getAllProducts($search, $sort, $category);
 
@@ -80,7 +80,7 @@ class ProductController extends Controller
                 do {
                     $code = $this->product->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->product->isUniqueCode($code));
+                } while (!$this->product->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -90,12 +90,12 @@ class ProductController extends Controller
             }
 
             if ($request['slug'] == '') {
-                $slug = Str::slug($request['name'].$request['code']);
+                $slug = Str::slug($request['name'] . $request['code']);
                 $tryCount = 1;
                 do {
-                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $uniqueSlug = $slug . ($tryCount > 1 ? '-' . $tryCount : '');
                     $tryCount++;
-                } while (! $this->product->isUniqueSlug($uniqueSlug));
+                } while (!$this->product->isUniqueSlug($uniqueSlug));
                 $request['slug'] = $uniqueSlug;
             }
 
@@ -161,7 +161,7 @@ class ProductController extends Controller
                 do {
                     $code = $this->product->generateCode($tryCount);
                     $tryCount++;
-                } while (! $this->product->isUniqueCode($code, $id));
+                } while (!$this->product->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 
@@ -171,12 +171,12 @@ class ProductController extends Controller
             }
 
             if ($request['slug'] == '') {
-                $slug = Str::slug($request['name'].$request['code']);
+                $slug = Str::slug($request['name'] . $request['code']);
                 $tryCount = 1;
                 do {
-                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
+                    $uniqueSlug = $slug . ($tryCount > 1 ? '-' . $tryCount : '');
                     $tryCount++;
-                } while (! $this->product->isUniqueSlug($uniqueSlug));
+                } while (!$this->product->isUniqueSlug($uniqueSlug));
                 $request['slug'] = $uniqueSlug;
             }
 
@@ -193,7 +193,11 @@ class ProductController extends Controller
         try {
             $product = $this->product->updateActiveProduct($id, $request->is_active);
 
-            return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
+            if ($request->is_active) {
+                return ResponseHelper::jsonResponse(true, 'Produk berhasil diaktifkan', new ProductResource($product), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Produk berhasil dinonaktifkan', new ProductResource($product), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
@@ -204,7 +208,11 @@ class ProductController extends Controller
         try {
             $product = $this->product->updateFeaturedProduct($id, $request->is_featured);
 
-            return ResponseHelper::jsonResponse(true, 'Success', new ProductResource($product), 200);
+            if ($request->is_featured) {
+                return ResponseHelper::jsonResponse(true, 'Produk berhasil dijadikan produk unggulan', new ProductResource($product), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Produk berhasil dihapus dari produk unggulan', new ProductResource($product), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
