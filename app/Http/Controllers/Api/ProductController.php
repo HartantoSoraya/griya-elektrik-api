@@ -26,14 +26,11 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         try {
-            $search = $request->search ? $request->search : null;
-            $sort = $request->sort ? $request->sort : null;
-            $category = $request->category ? $request->category : null;
 
-            $products = $this->product->getAllProducts($search, $sort, $category);
+            $products = $this->product->getAllProducts();
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
@@ -41,10 +38,14 @@ class ProductController extends Controller
         }
     }
 
-    public function readAllActiveProducts()
+    public function readAllActiveProducts(Request $request)
     {
         try {
-            $products = $this->product->getAllActiveProducts();
+            $search = $request->search ? $request->search : null;
+            $sort = $request->sort ? $request->sort : null;
+            $category = $request->category ? $request->category : null;
+
+            $products = $this->product->getAllActiveProducts($search, $sort, $category);
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
