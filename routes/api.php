@@ -34,7 +34,7 @@ Route::get('products', [App\Http\Controllers\Api\ProductController::class, 'inde
 Route::get('products/active', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveProducts']);
 Route::get('products/active-featured', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveAndFeaturedProducts']);
 Route::get('products/{id}', [App\Http\Controllers\Api\ProductController::class, 'show']);
-Route::get('products/slug/{slug}', [App\Http\Controllers\Api\ProductController::class, 'showBySlug']);
+Route::get('products/{slug}', [App\Http\Controllers\Api\ProductController::class, 'readProductBySlug']);
 
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
