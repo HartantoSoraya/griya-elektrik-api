@@ -116,7 +116,11 @@ class BranchController extends Controller
         try {
             $branch = $this->branch->updateMainBranch($id, $request->is_main);
 
-            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+            if ($request->is_main) {
+                return ResponseHelper::jsonResponse(true, 'Cabang Utama berhasil diubah', new BranchResource($branch), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Cabang Utama berhasil diubah', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
@@ -127,7 +131,11 @@ class BranchController extends Controller
         try {
             $branch = $this->branch->updateActiveBranch($id, $request->is_active);
 
-            return ResponseHelper::jsonResponse(true, 'Success', new BranchResource($branch), 200);
+            if ($request->is_active) {
+                return ResponseHelper::jsonResponse(true, 'Cabang berhasil diaktifkan', new BranchResource($branch), 200);
+            }
+
+            return ResponseHelper::jsonResponse(true, 'Cabang berhasil dinonaktifkan', new BranchResource($branch), 200);
         } catch (\Exception $exception) {
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
