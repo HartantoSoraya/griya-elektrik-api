@@ -18,6 +18,7 @@ Route::get('web-configuration', [App\Http\Controllers\Api\WebConfigurationContro
 Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
+Route::get('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'show']);
 Route::get('branches/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
 Route::get('branches/active', [App\Http\Controllers\Api\BranchController::class, 'getAllActiveBranch']);
 
