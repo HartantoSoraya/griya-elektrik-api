@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\BannerRepositoryInterface;
 use App\Models\Banner;
+use Illuminate\Support\Facades\Storage;
 
 class BannerRepository implements BannerRepositoryInterface
 {
@@ -29,7 +30,7 @@ class BannerRepository implements BannerRepositoryInterface
     public function updateBanner($data, $id)
     {
         $banner = Banner::find($id);
-        $banner->image = $data['image']->store('assets/banners', 'public');
+        $banner->image = $this->updateImage($banner->image, $data['image']);
         $banner->save();
 
         return $banner;
@@ -38,5 +39,14 @@ class BannerRepository implements BannerRepositoryInterface
     public function deleteBanner($id)
     {
         return Banner::destroy($id);
+    }
+
+    private function updateImage($oldImage, $newImage): string
+    {
+        if ($oldImage !== $newImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
+
+        return $newImage->store('assets/banners', 'public');
     }
 }

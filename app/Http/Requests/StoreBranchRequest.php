@@ -29,11 +29,23 @@ class StoreBranchRequest extends FormRequest
             'is_main' => 'required|boolean',
             'is_active' => 'required|boolean',
             'branch_images' => 'nullable|array',
-            'branch_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'branch_images.*.id' => 'nullable|string',
+            'branch_images.*.image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
     public function prepareForValidation()
     {
+        if ($this->has('branch_images')) {
+            $branchImages = $this->branch_images;
+            foreach ($branchImages as $index => $branchImage) {
+                if (! isset($branchImage['id'])) {
+                    $branchImages[$index]['id'] = null;
+                }
+            }
+            $this->merge(['branch_images' => $branchImages]);
+        } else {
+            $this->merge(['branch_images' => []]);
+        }
     }
 }

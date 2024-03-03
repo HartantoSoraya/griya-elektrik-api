@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductCategoryRepositoryInterface;
 use App\Models\ProductCategory;
+use Illuminate\Support\Facades\Storage;
 
 class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 {
@@ -87,7 +88,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->parent_id = $data['parent_id'];
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
-        $productCategory->image = $data['image']->store('assets/product-categories', 'public') ?? $productCategory->image;
+        $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 
@@ -135,5 +136,14 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         }
 
         return $result->count() == 0 ? true : false;
+    }
+
+    private function updateImage($oldImage, $newImage): string
+    {
+        if ($oldImage) {
+            Storage::delete($oldImage);
+        }
+
+        return $newImage->store('assets/product-categories', 'public');
     }
 }

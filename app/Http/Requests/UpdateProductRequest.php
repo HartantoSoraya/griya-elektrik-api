@@ -11,7 +11,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'code' => 'required|string|max:255|unique:products,code,'.$this->route('id').',id',
             'product_category_id' => 'required|exists:product_categories,id',
-            'product_brand_id' => 'required|exists:brands,id',
+            'product_brand_id' => 'required|exists:product_brands,id',
             'name' => 'required|string|max:255',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required|string|max:255',

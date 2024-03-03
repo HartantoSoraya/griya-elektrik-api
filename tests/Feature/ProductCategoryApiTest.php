@@ -402,20 +402,24 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_update_with_auto_code_and_empty_slug_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+        $productCategory = ProductCategory::factory()->make([
+            'code' => 'AUTO',
+            'slug' => '',
+        ])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
 
         $api->assertSuccessful();
 
-        $productCategory = ProductCategory::factory()->create();
+        $productCategory['id'] = $api['data']['id'];
 
         $updatedProductCategory = ProductCategory::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory['id'], $updatedProductCategory);
 
         $api->assertSuccessful();
 
@@ -427,6 +431,8 @@ class ProductCategoryAPITest extends TestCase
             'product_categories',
             $updatedProductCategory
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($updatedProductCategory['image']));
     }
 
     public function test_product_category_api_call_update_with_random_code_and_slug_expect_successful()
