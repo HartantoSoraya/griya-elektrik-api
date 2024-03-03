@@ -38,6 +38,35 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return ProductCategory::find($id);
     }
 
+    public function getAllDescendantCategories(string $productCategoryId)
+    {
+        $productCategory = [$productCategoryId];
+        $result = [];
+
+        while (! empty($productCategory)) {
+            $currentCategoryId = array_shift($productCategory);
+
+            $category = ProductCategory::find($currentCategoryId);
+            if (! $category) {
+                continue;
+            }
+
+            $result[] = $currentCategoryId;
+
+            $childrenIds = $category->children()->pluck('id')->toArray();
+            $productCategory = array_merge($productCategory, $childrenIds);
+        }
+
+        foreach ($result as $categoryId) {
+            $category = ProductCategory::find($categoryId);
+            if (! $category->isLeaf()) {
+                unset($result[array_search($categoryId, $result)]);
+            }
+        }
+
+        return $result;
+    }
+
     public function createCategory(array $data)
     {
         $productCategory = new ProductCategory();

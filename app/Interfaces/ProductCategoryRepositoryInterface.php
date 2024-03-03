@@ -12,6 +12,8 @@ interface ProductCategoryRepositoryInterface
 
     public function getEmptyCategories();
 
+    public function getAllDescendantCategories(string $categoryId);
+
     public function getCategoryById(string $id);
 
     public function createCategory(array $data);

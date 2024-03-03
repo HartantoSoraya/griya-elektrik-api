@@ -53,7 +53,7 @@ class BranchController extends Controller
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->branch->isUniqueCode($code));
+                } while (! $this->branch->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -99,7 +99,7 @@ class BranchController extends Controller
                 do {
                     $code = $this->branch->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->branch->isUniqueCode($code, $id));
+                } while (! $this->branch->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 

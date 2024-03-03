@@ -8,6 +8,7 @@ use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductLink;
 use App\Models\User;
+use App\Repositories\ProductCategoryRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -239,6 +240,44 @@ class ProductAPITest extends TestCase
                 'products', $item->toArray()
             );
         }
+    }
+
+    public function test_product_api_call_read_all_active_product_with_category_expect_collection()
+    {
+        $password = '1234567890';
+        $user = User::factory()->create(['password' => $password]);
+
+        $this->actingAs($user);
+
+        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
+
+        $api->assertSuccessful();
+
+        $categories = ProductCategory::factory()->getProductCategoryExample();
+
+        $rootCategory = ProductCategory::factory()->setName($categories[0])->create();
+
+        $category = ProductCategory::factory()->for($rootCategory, 'parent')->setName($categories[1])->create();
+
+        ProductCategory::factory()->for($category, 'parent')->count(4)->create();
+        $subCategory = ProductCategory::factory()->for($category, 'parent')->setName($categories[2])->create();
+
+        ProductBrand::factory()->count(3)->create();
+
+        Product::factory()
+            ->for($subCategory, 'category')
+            ->for(ProductBrand::inRandomOrder()->first(), 'brand')
+            ->setActive()->count(10)->create();
+
+        $api = $this->json('GET', 'api/v1/products/active?categoryId='.$rootCategory->id);
+
+        $api->assertSuccessful();
+
+        $productCategoryRepository = new ProductCategoryRepository();
+        $categoryIds = $productCategoryRepository->getAllDescendantCategories($rootCategory->id);
+
+        $productCount = Product::whereIn('product_category_id', $categoryIds)->where('is_active', true)->count();
+        $this->assertEquals($productCount, count($api['data']));
     }
 
     public function test_product_api_call_read_all_active_and_featured_product_expect_collection()

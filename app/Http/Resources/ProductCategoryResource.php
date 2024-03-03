@@ -26,7 +26,7 @@ class ProductCategoryResource extends JsonResource
             'code' => $this->code,
             'name' => $this->name,
             'image' => $this->image,
-            'image_url' => $this->image ? asset('storage/' . $this->image) : '',
+            'image_url' => $this->image ? asset('storage/'.$this->image) : '',
             'slug' => $this->slug,
         ];
     }

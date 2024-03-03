@@ -42,10 +42,10 @@ class ProductController extends Controller
     {
         try {
             $search = $request->search ? $request->search : null;
+            $categoryId = $request->categoryId ? $request->categoryId : null;
             $sort = $request->sort ? $request->sort : null;
-            $category = $request->category ? $request->category : null;
 
-            $products = $this->product->getAllActiveProducts($search, $sort, $category);
+            $products = $this->product->getAllActiveProducts($search, $categoryId, $sort);
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
@@ -81,7 +81,7 @@ class ProductController extends Controller
                 do {
                     $code = $this->product->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->product->isUniqueCode($code));
+                } while (! $this->product->isUniqueCode($code));
                 $request['code'] = $code;
             }
 
@@ -91,12 +91,12 @@ class ProductController extends Controller
             }
 
             if ($request['slug'] == '') {
-                $slug = Str::slug($request['name'] . $request['code']);
+                $slug = Str::slug($request['name'].$request['code']);
                 $tryCount = 1;
                 do {
-                    $uniqueSlug = $slug . ($tryCount > 1 ? '-' . $tryCount : '');
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
                     $tryCount++;
-                } while (!$this->product->isUniqueSlug($uniqueSlug));
+                } while (! $this->product->isUniqueSlug($uniqueSlug));
                 $request['slug'] = $uniqueSlug;
             }
 
@@ -162,7 +162,7 @@ class ProductController extends Controller
                 do {
                     $code = $this->product->generateCode($tryCount);
                     $tryCount++;
-                } while (!$this->product->isUniqueCode($code, $id));
+                } while (! $this->product->isUniqueCode($code, $id));
                 $request['code'] = $code;
             }
 
@@ -172,12 +172,12 @@ class ProductController extends Controller
             }
 
             if ($request['slug'] == '') {
-                $slug = Str::slug($request['name'] . $request['code']);
+                $slug = Str::slug($request['name'].$request['code']);
                 $tryCount = 1;
                 do {
-                    $uniqueSlug = $slug . ($tryCount > 1 ? '-' . $tryCount : '');
+                    $uniqueSlug = $slug.($tryCount > 1 ? '-'.$tryCount : '');
                     $tryCount++;
-                } while (!$this->product->isUniqueSlug($uniqueSlug));
+                } while (! $this->product->isUniqueSlug($uniqueSlug));
                 $request['slug'] = $uniqueSlug;
             }
 

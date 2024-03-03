@@ -6,7 +6,7 @@ interface ProductRepositoryInterface
 {
     public function getAllProducts();
 
-    public function getAllActiveProducts($search = null, $sort = null, $category = null);
+    public function getAllActiveProducts($search = null, $categoryId = null, $sort = null);
 
     public function getAllActiveAndFeaturedProducts();
 

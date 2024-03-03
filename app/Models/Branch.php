@@ -32,7 +32,7 @@ class Branch extends Model
     protected $casts = [
         'is_main' => 'boolean',
         'is_active' => 'boolean',
-        'sort' => 'integer'
+        'sort' => 'integer',
     ];
 
     public function branchImages()
