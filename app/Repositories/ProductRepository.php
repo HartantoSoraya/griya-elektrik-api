@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductLink;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductRepository implements ProductRepositoryInterface
 {
@@ -124,7 +125,7 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
-            $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
+            $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
             $product->description = $data['description'];
             $product->price = $data['price'];
             if (isset($data['is_featured'])) {
@@ -136,9 +137,10 @@ class ProductRepository implements ProductRepositoryInterface
             $product->slug = $data['slug'];
             $product->save();
 
+            if ($product->productImages->count() > 0) {
+                $this->deleteProductImages($product);
+            }
             if (isset($data['product_images'])) {
-                $product->productImages()->delete();
-
                 foreach ($data['product_images'] as $image) {
                     $productImage = new ProductImage();
                     $productImage->product_id = $product->id;
@@ -147,9 +149,8 @@ class ProductRepository implements ProductRepositoryInterface
                 }
             }
 
+            $product->productLinks()->delete();
             if (isset($data['product_links'])) {
-                $product->productLinks()->delete();
-
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();
                     $productLink->product_id = $product->id;
@@ -233,5 +234,24 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $result->count() == 0 ? true : false;
+    }
+
+    private function updateThumbnail($oldThumbnail, $newThumbnail)
+    {
+        if ($oldThumbnail) {
+            Storage::disk('public')->delete($oldThumbnail);
+        }
+
+        return $newThumbnail->store('assets/products/thumbnails', 'public');
+    }
+
+    private function deleteProductImages(Product $product)
+    {
+        $productImages = $product->productImages;
+        foreach ($productImages as $productImage) {
+            Storage::disk('public')->delete($productImage->image);
+        }
+
+        $product->productImages()->delete();
     }
 }

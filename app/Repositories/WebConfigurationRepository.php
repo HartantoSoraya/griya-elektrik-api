@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Interfaces\WebConfigurationRepositoryInterface;
 use App\Models\WebConfiguration;
+use Illuminate\Support\Facades\Storage;
 
 class WebConfigurationRepository implements WebConfigurationRepositoryInterface
 {
@@ -17,9 +18,18 @@ class WebConfigurationRepository implements WebConfigurationRepositoryInterface
         $webConfiguration = WebConfiguration::first();
         $webConfiguration->title = $data['title'];
         $webConfiguration->description = $data['description'];
-        $webConfiguration->logo = $data['logo']->store('assets/web-configurations', 'public');
+        $webConfiguration->logo = $this->updateLogo($webConfiguration->logo, $data['logo']);
         $webConfiguration->save();
 
         return $webConfiguration;
+    }
+
+    private function updateLogo($oldLogo, $newLogo)
+    {
+        if ($oldLogo) {
+            Storage::disk('public')->delete($oldLogo);
+        }
+
+        return $newLogo->store('assets/web-configurations', 'public');
     }
 }
