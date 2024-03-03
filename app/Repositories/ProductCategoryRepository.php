@@ -33,12 +33,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return $emptyCategories;
     }
 
-    public function getCategoryById(string $id)
-    {
-        return ProductCategory::find($id);
-    }
-
-    public function getAllDescendantCategories(string $productCategoryId)
+    public function getDescendantCategories(string $productCategoryId)
     {
         $productCategory = [$productCategoryId];
         $result = [];
@@ -65,6 +60,11 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         }
 
         return $result;
+    }
+
+    public function getCategoryById(string $id)
+    {
+        return ProductCategory::find($id);
     }
 
     public function createCategory(array $data)

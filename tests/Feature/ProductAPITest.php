@@ -274,7 +274,7 @@ class ProductAPITest extends TestCase
         $api->assertSuccessful();
 
         $productCategoryRepository = new ProductCategoryRepository();
-        $categoryIds = $productCategoryRepository->getAllDescendantCategories($rootCategory->id);
+        $categoryIds = $productCategoryRepository->getDescendantCategories($rootCategory->id);
 
         $productCount = Product::whereIn('product_category_id', $categoryIds)->where('is_active', true)->count();
         $this->assertEquals($productCount, count($api['data']));

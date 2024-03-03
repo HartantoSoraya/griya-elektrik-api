@@ -27,7 +27,7 @@ class ProductRepository implements ProductRepositoryInterface
 
         if ($categoryId) {
             $productCategoryRepository = new ProductCategoryRepository();
-            $categoryIds = $productCategoryRepository->getAllDescendantCategories($categoryId);
+            $categoryIds = $productCategoryRepository->getDescendantCategories($categoryId);
 
             $query->whereIn('product_category_id', $categoryIds);
         }

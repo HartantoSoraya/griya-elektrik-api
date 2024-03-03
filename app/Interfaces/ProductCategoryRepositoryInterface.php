@@ -12,7 +12,7 @@ interface ProductCategoryRepositoryInterface
 
     public function getEmptyCategories();
 
-    public function getAllDescendantCategories(string $categoryId);
+    public function getDescendantCategories(string $categoryId);
 
     public function getCategoryById(string $id);
 
