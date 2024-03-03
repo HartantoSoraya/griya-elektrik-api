@@ -46,7 +46,7 @@ class BranchRepository implements BranchRepositoryInterface
                 foreach ($data['branch_images'] as $image) {
                     $branchImage = new BranchImage();
                     $branchImage->branch_id = $branch->id;
-                    $branchImage->image = $image['image']->store('assets/branches/images', 'public');
+                    $branchImage->image = $image->store('assets/branches/images', 'public');
                     $branchImage->save();
                 }
             }
@@ -82,20 +82,12 @@ class BranchRepository implements BranchRepositoryInterface
             $branch->is_active = $data['is_active'];
             $branch->save();
 
-            $existingImageIds = collect($branch->branchImages()->pluck('id'));
-            $newImageIds = collect($data['branch_images'])->pluck('id')->filter();
-            $deletedImageIds = $existingImageIds->diff($newImageIds);
-            $this->deleteBranchImages($deletedImageIds);
-
-            foreach ($data['branch_images'] as $image) {
-                if (isset($image['id'])) {
-                    $branchImage = BranchImage::find($image['id']);
-                    $branchImage->image = $this->updateBranchImage($branchImage->image, $image['image']);
-                    $branchImage->save();
-                } else {
+            $this->deleteBranchImages($branch);
+            if (isset($data['branch_images'])) {
+                foreach ($data['branch_images'] as $image) {
                     $branchImage = new BranchImage();
                     $branchImage->branch_id = $branch->id;
-                    $branchImage->image = $image['image']->store('assets/branches/images', 'public');
+                    $branchImage->image = $image->store('assets/branches/images', 'public');
                     $branchImage->save();
                 }
             }
@@ -179,13 +171,13 @@ class BranchRepository implements BranchRepositoryInterface
         return $newImage->store('assets/branches/images', 'public');
     }
 
-    private function deleteBranchImages($branchImageIds)
+    private function deleteBranchImages($branch)
     {
-        $branchImages = BranchImage::whereIn('id', $branchImageIds)->get();
+        $branchImages = $branch->branchImages;
         foreach ($branchImages as $branchImage) {
             Storage::disk('public')->delete($branchImage->image);
         }
 
-        return BranchImage::whereIn('id', $branchImageIds)->delete();
+        return $branch->branchImages()->delete();
     }
 }

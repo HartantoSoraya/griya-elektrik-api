@@ -31,11 +31,13 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $branchImageCount = mt_rand(1, 3);
-        $branchImages = BranchImage::factory()->count($branchImageCount)->make()->toArray();
+        $branchImages = [];
+        for ($i = 0; $i < mt_rand(1, 3); $i++) {
+            array_push($branchImages, BranchImage::factory()->make()->image);
+        }
         $branch['branch_images'] = $branchImages;
 
-        $api = $this->json('POST', 'api/v1/branches', $branch);
+        $api = $this->json('POST', 'api/v1/branch', $branch);
 
         $api->assertSuccessful();
 
@@ -58,7 +60,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/branches', $branch);
+        $api = $this->json('POST', 'api/v1/branch', $branch);
 
         $api->assertSuccessful();
 
@@ -78,7 +80,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $api = $this->json('POST', 'api/v1/branches', $branch->toArray());
+        $api = $this->json('POST', 'api/v1/branch', $branch->toArray());
 
         $api->assertStatus(422);
     }
@@ -97,6 +99,23 @@ class BranchAPITest extends TestCase
         $api = $this->json('GET', 'api/v1/branches');
 
         $api->assertSuccessful();
+    }
+
+    public function test_branch_api_call_get_all_active_branch_expect_collection()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $branches = Branch::factory()->count(3)->create(['is_active' => true]);
+
+        $api = $this->json('GET', 'api/v1/branches/active');
+
+        $api->assertSuccessful();
+
+        foreach ($branches as $branch) {
+            $api->assertJsonFragment(['id' => $branch->id]);
+        }
     }
 
     public function test_branch_api_call_update_with_auto_code_expect_successful()
@@ -118,7 +137,7 @@ class BranchAPITest extends TestCase
         $branchImages = BranchImage::factory()->count($branchImageCount)->make()->toArray();
         $branch['branch_images'] = $branchImages;
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id, $updatedBranch);
 
         $api->assertSuccessful();
 
@@ -146,7 +165,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/main', ['is_main' => true]);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id.'/main', ['is_main' => true]);
 
         $api->assertSuccessful();
 
@@ -176,7 +195,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create(['is_main' => true]);
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/main', ['is_main' => false]);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id.'/main', ['is_main' => false]);
 
         $api->assertSuccessful();
 
@@ -196,7 +215,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/active', ['is_active' => true]);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id.'/active', ['is_active' => true]);
 
         $api->assertSuccessful();
 
@@ -216,7 +235,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create(['is_active' => true]);
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id.'/active', ['is_active' => false]);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id.'/active', ['is_active' => false]);
 
         $api->assertSuccessful();
 
@@ -238,7 +257,7 @@ class BranchAPITest extends TestCase
 
         $updatedBranch = Branch::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id, $updatedBranch);
 
         $api->assertSuccessful();
 
@@ -263,7 +282,7 @@ class BranchAPITest extends TestCase
         $updatedBranch = $branch->toArray();
         $updatedBranch['code'] = $existingBranch->code;
 
-        $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id, $updatedBranch);
 
         $api->assertStatus(422);
     }
@@ -281,7 +300,7 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->create();
 
-        $api = $this->json('DELETE', 'api/v1/branches/'.$branch->id);
+        $api = $this->json('DELETE', 'api/v1/branch/'.$branch->id);
 
         $api->assertSuccessful();
 

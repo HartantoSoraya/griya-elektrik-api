@@ -18,9 +18,9 @@ Route::get('web-configuration', [App\Http\Controllers\Api\WebConfigurationContro
 Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index']);
 
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
-Route::get('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'show']);
-Route::get('branches/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
 Route::get('branches/active', [App\Http\Controllers\Api\BranchController::class, 'getAllActiveBranch']);
+Route::get('branch/{id}', [App\Http\Controllers\Api\BranchController::class, 'show']);
+Route::get('branch/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);
@@ -42,11 +42,11 @@ Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('web-configuration', [App\Http\Controllers\Api\WebConfigurationController::class, 'update']);
 
-    Route::post('branches', [App\Http\Controllers\Api\BranchController::class, 'store']);
-    Route::post('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'update']);
-    Route::post('branches/{id}/main', [App\Http\Controllers\Api\BranchController::class, 'updateMainBranch']);
-    Route::post('branches/{id}/active', [App\Http\Controllers\Api\BranchController::class, 'updateActiveBranch']);
-    Route::delete('branches/{id}', [App\Http\Controllers\Api\BranchController::class, 'destroy']);
+    Route::post('branch', [App\Http\Controllers\Api\BranchController::class, 'store']);
+    Route::post('branch/{id}', [App\Http\Controllers\Api\BranchController::class, 'update']);
+    Route::post('branch/{id}/main', [App\Http\Controllers\Api\BranchController::class, 'updateMainBranch']);
+    Route::post('branch/{id}/active', [App\Http\Controllers\Api\BranchController::class, 'updateActiveBranch']);
+    Route::delete('branch/{id}', [App\Http\Controllers\Api\BranchController::class, 'destroy']);
 
     Route::delete('branch-images/{id}', [App\Http\Controllers\Api\BranchImageController::class, 'destroy']);
 
