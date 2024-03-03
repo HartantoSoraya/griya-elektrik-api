@@ -127,8 +127,12 @@ class ProductRepository implements ProductRepositoryInterface
             $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
             $product->description = $data['description'];
             $product->price = $data['price'];
-            $product->is_featured = $data['is_featured'];
-            $product->is_active = $data['is_active'];
+            if (isset($data['is_featured'])) {
+                $product->is_featured = $data['is_featured'];
+            }
+            if (isset($data['is_active'])) {
+                $product->is_active = $data['is_active'];
+            }
             $product->slug = $data['slug'];
             $product->save();
 

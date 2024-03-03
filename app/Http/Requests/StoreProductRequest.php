@@ -10,8 +10,8 @@ class StoreProductRequest extends FormRequest
     {
         return [
             'code' => 'required|string|max:255|unique:products,code',
-            'product_category_id' => 'required',
-            'product_brand_id' => 'required',
+            'product_category_id' => 'required|exists:product_categories,id',
+            'product_brand_id' => 'required|exists:brands,id',
             'name' => 'required|string|max:255',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description' => 'required|string|max:255',
@@ -29,10 +29,6 @@ class StoreProductRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        if (! $this->has('parent_id')) {
-            $this->merge(['parent_id' => null]);
-        }
-
         if (! $this->has('slug')) {
             $this->merge(['slug' => null]);
         }
