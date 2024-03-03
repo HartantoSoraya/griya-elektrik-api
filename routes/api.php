@@ -20,7 +20,7 @@ Route::get('banners', [App\Http\Controllers\Api\BannerController::class, 'index'
 Route::get('branches', [App\Http\Controllers\Api\BranchController::class, 'index']);
 Route::get('branches/active', [App\Http\Controllers\Api\BranchController::class, 'getAllActiveBranch']);
 Route::get('branch/{id}', [App\Http\Controllers\Api\BranchController::class, 'show']);
-Route::get('branch/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
+Route::get('branch/read/main', [App\Http\Controllers\Api\BranchController::class, 'readMainBranch']);
 
 Route::get('product-categories', [App\Http\Controllers\Api\ProductCategoryController::class, 'index']);
 Route::get('product-categories/root', [App\Http\Controllers\Api\ProductCategoryController::class, 'readRootCategories']);
