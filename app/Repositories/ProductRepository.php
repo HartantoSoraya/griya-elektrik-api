@@ -17,13 +17,22 @@ class ProductRepository implements ProductRepositoryInterface
         return $query->get();
     }
 
-    public function getAllActiveProducts($search = null, $sort = null, $category = null)
+    public function getAllActiveProducts($search = null, $categoryId = null, $sort = null)
     {
         $query = Product::with('category', 'brand');
 
         if ($search) {
-            $query->where('name', 'like', '%' . $search . '%');
+            $query->where('name', 'like', '%'.$search.'%');
         }
+
+        if ($categoryId) {
+            $productCategoryRepository = new ProductCategoryRepository();
+            $categoryIds = $productCategoryRepository->getDescendantCategories($categoryId);
+
+            $query->whereIn('product_category_id', $categoryIds);
+        }
+
+        $query->where('is_active', true);
 
         if ($sort === 'price_asc') {
             $query->orderBy('price', 'asc');
@@ -34,12 +43,6 @@ class ProductRepository implements ProductRepositoryInterface
         } elseif ($sort === 'oldest') {
             $query->orderBy('created_at', 'asc');
         }
-
-        if ($category) {
-            $query->where('product_category_id', $category);
-        }
-
-        $query->where('is_active', true);
 
         return $query->get();
     }
@@ -129,10 +132,8 @@ class ProductRepository implements ProductRepositoryInterface
             $product->slug = $data['slug'];
             $product->save();
 
-
             if (isset($data['product_images'])) {
                 $product->productImages()->delete();
-
 
                 foreach ($data['product_images'] as $image) {
                     $productImage = new ProductImage();
@@ -144,7 +145,6 @@ class ProductRepository implements ProductRepositoryInterface
 
             if (isset($data['product_links'])) {
                 $product->productLinks()->delete();
-
 
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();

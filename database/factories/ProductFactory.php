@@ -37,4 +37,13 @@ class ProductFactory extends Factory
             'slug' => Str::slug($name.'-'.$code),
         ];
     }
+
+    public function setActive()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'is_active' => true,
+            ];
+        });
+    }
 }

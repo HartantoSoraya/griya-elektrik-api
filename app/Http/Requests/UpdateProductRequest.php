@@ -9,7 +9,7 @@ class UpdateProductRequest extends FormRequest
     public function rules()
     {
         return [
-            'code' => 'required|string|max:255|unique:products,code,'.$this->route('id'),
+            'code' => 'required|string|max:255|unique:products,code,'.$this->route('id').',id',
             'product_category_id' => 'required',
             'product_brand_id' => 'required',
             'name' => 'required|string|max:255',
@@ -18,7 +18,7 @@ class UpdateProductRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'is_featured' => 'required|boolean',
             'is_active' => 'required|boolean',
-            'slug' => 'nullable|string|max:255|unique:products,slug,'.$this->route('id'),
+            'slug' => 'nullable|string|max:255|unique:products,slug,'.$this->route('id').',id',
             'product_images' => 'nullable|array',
             'product_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'product_links' => 'nullable|array',
