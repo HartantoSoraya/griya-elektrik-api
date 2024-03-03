@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Branch;
-use App\Models\ProductImage;
+use App\Models\BranchImage;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -31,11 +31,9 @@ class BranchAPITest extends TestCase
 
         $branch = Branch::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $branchImages = [];
-        for ($i = 0; $i < 3; $i++) {
-            array_push($branchImages, ProductImage::factory()->make()->image);
-        }
-        $branch['images'] = $branchImages;
+        $branchImageCount = mt_rand(1, 3);
+        $branchImages = BranchImage::factory()->count($branchImageCount)->make()->toArray();
+        $branch['branch_images'] = $branchImages;
 
         $api = $this->json('POST', 'api/v1/branches', $branch);
 
@@ -44,24 +42,19 @@ class BranchAPITest extends TestCase
         $branch['code'] = $api->json('data')['code'];
 
         $this->assertDatabaseHas(
-            'branches', Arr::except($branch, ['images'])
+            'branches', Arr::except($branch, ['branch_images'])
         );
 
-        foreach ($api['data']['images'] as $image) {
-            $this->assertTrue(Storage::disk('public')->exists($image));
+        foreach ($api['data']['branch_images'] as $image) {
+            $this->assertTrue(Storage::disk('public')->exists($image['image']));
         }
     }
 
     public function test_branch_api_call_create_with_random_code_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $branch = Branch::factory()->make()->toArray();
 
@@ -121,11 +114,9 @@ class BranchAPITest extends TestCase
 
         $updatedBranch = Branch::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $branchImages = [];
-        for ($i = 0; $i < 3; $i++) {
-            array_push($branchImages, ProductImage::factory()->make()->image);
-        }
-        $updatedBranch['images'] = $branchImages;
+        $branchImageCount = mt_rand(1, 3);
+        $branchImages = BranchImage::factory()->count($branchImageCount)->make()->toArray();
+        $branch['branch_images'] = $branchImages;
 
         $api = $this->json('POST', 'api/v1/branches/'.$branch->id, $updatedBranch);
 
@@ -133,13 +124,12 @@ class BranchAPITest extends TestCase
 
         $updatedBranch['code'] = $api->json('data')['code'];
 
-        // $this->assertDatabaseHas('branches', $updatedBranch);
         $this->assertDatabaseHas(
-            'branches', Arr::except($updatedBranch, ['images'])
+            'branches', Arr::except($updatedBranch, ['branch_images'])
         );
 
-        foreach ($api['data']['images'] as $image) {
-            $this->assertTrue(Storage::disk('public')->exists($image));
+        foreach ($api['data']['branch_images'] as $image) {
+            $this->assertTrue(Storage::disk('public')->exists($image['image']));
         }
     }
 

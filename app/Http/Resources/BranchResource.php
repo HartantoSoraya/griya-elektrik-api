@@ -30,7 +30,7 @@ class BranchResource extends JsonResource
             'sort' => $this->sort,
             'is_main' => $this->is_main,
             'is_active' => $this->is_active,
-            'images' => BranchImageResource::collection($this->branchImages),
+            'branch_images' => BranchImageResource::collection($this->branchImages),
         ];
     }
 }
