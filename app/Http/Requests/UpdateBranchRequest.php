@@ -35,6 +35,24 @@ class UpdateBranchRequest extends FormRequest
 
     public function prepareForValidation()
     {
+        if (! $this->has('email')) {
+            $this->merge(['email' => null]);
+        }
 
+        if (! $this->has('phone')) {
+            $this->merge(['phone' => null]);
+        }
+
+        if (! $this->has('facebook')) {
+            $this->merge(['facebook' => null]);
+        }
+
+        if (! $this->has('instagram')) {
+            $this->merge(['instagram' => null]);
+        }
+
+        if (! $this->has('youtube')) {
+            $this->merge(['youtube' => null]);
+        }
     }
 }
