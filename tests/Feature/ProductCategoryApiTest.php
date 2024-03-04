@@ -23,21 +23,16 @@ class ProductCategoryAPITest extends TestCase
      */
     public function test_product_category_api_call_create_with_auto_code_and_empty_slug_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $productCategory = ProductCategory::factory()->make([
             'code' => 'AUTO',
             'slug' => '',
         ])->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -55,18 +50,13 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_create_with_random_code_and_slug_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $productCategory = ProductCategory::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -82,14 +72,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_create_with_random_code_and_slug_and_childs_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $categories = ProductCategory::factory()->getProductCategoryExample();
 
@@ -97,7 +82,7 @@ class ProductCategoryAPITest extends TestCase
 
         $productCategory = ProductCategory::factory()->setName($categories[0])->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -119,7 +104,7 @@ class ProductCategoryAPITest extends TestCase
             ->setName($categories[1])
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -141,7 +126,7 @@ class ProductCategoryAPITest extends TestCase
             ->setName($categories[2])
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -157,14 +142,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_create_with_random_code_and_slug_and_parent_has_been_used_on_products_expect_error()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $parentCategory = ProductCategory::factory()->create();
 
@@ -176,25 +156,20 @@ class ProductCategoryAPITest extends TestCase
             ->for($parentCategory, 'parent')
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertStatus(422);
     }
 
     public function test_product_category_api_call_read_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $productCategories = ProductCategory::factory()->count(3)->create();
 
-        $api = $this->json('GET', 'api/v1/product-categories');
+        $api = $this->json('GET', 'api/v1/product-category/read/any');
 
         $api->assertSuccessful();
 
@@ -210,14 +185,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_read_root_categories_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         for ($i = 0; $i < 3; $i++) {
             $categories = ProductCategory::factory()->getProductCategoryExample();
@@ -226,7 +196,7 @@ class ProductCategoryAPITest extends TestCase
 
             $productCategory = ProductCategory::factory()->setName($categories[0])->make()->toArray();
 
-            $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+            $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
             $api->assertSuccessful();
 
@@ -247,7 +217,7 @@ class ProductCategoryAPITest extends TestCase
                 ->setName($categories[1])
                 ->make()->toArray();
 
-            $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+            $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
             $api->assertSuccessful();
 
@@ -268,7 +238,7 @@ class ProductCategoryAPITest extends TestCase
                 ->setName($categories[2])
                 ->make()->toArray();
 
-            $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+            $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
             $api->assertSuccessful();
 
@@ -281,7 +251,7 @@ class ProductCategoryAPITest extends TestCase
             );
         }
 
-        $api = $this->json('GET', 'api/v1/product-categories/root');
+        $api = $this->json('GET', 'api/v1/product-category/read/root');
 
         $api->assertSuccessful();
 
@@ -293,14 +263,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_read_leaf_categories_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $categories = ProductCategory::factory()->getProductCategoryExample();
 
@@ -308,7 +273,7 @@ class ProductCategoryAPITest extends TestCase
 
         $productCategory = ProductCategory::factory()->setName($categories[0])->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -329,7 +294,7 @@ class ProductCategoryAPITest extends TestCase
             ->setName($categories[1])
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -350,7 +315,7 @@ class ProductCategoryAPITest extends TestCase
             ->setName($categories[2])
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -362,7 +327,7 @@ class ProductCategoryAPITest extends TestCase
             $productCategory
         );
 
-        $api = $this->json('GET', 'api/v1/product-categories/leaf');
+        $api = $this->json('GET', 'api/v1/product-category/read/leaf');
 
         $api->assertSuccessful();
 
@@ -374,14 +339,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_read_empty_categories_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         ProductCategory::factory()
             ->has(Product::factory()->for(ProductBrand::factory()->create(), 'brand'))
@@ -389,7 +349,7 @@ class ProductCategoryAPITest extends TestCase
 
         ProductCategory::factory()->count(5)->create();
 
-        $api = $this->json('GET', 'api/v1/product-categories/empty');
+        $api = $this->json('GET', 'api/v1/product-category/read/no-product');
 
         $api->assertSuccessful();
 
@@ -411,7 +371,7 @@ class ProductCategoryAPITest extends TestCase
             'slug' => '',
         ])->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories', $productCategory);
+        $api = $this->json('POST', 'api/v1/product-category', $productCategory);
 
         $api->assertSuccessful();
 
@@ -419,7 +379,7 @@ class ProductCategoryAPITest extends TestCase
 
         $updatedProductCategory = ProductCategory::factory()->make(['code' => 'AUTO'])->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory['id'], $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-category/'.$productCategory['id'], $updatedProductCategory);
 
         $api->assertSuccessful();
 
@@ -437,20 +397,15 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_update_with_random_code_and_slug_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $productCategory = ProductCategory::factory()->create();
 
         $updatedProductCategory = ProductCategory::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/'.$productCategory->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-category/'.$productCategory->id, $updatedProductCategory);
 
         $api->assertSuccessful();
 
@@ -464,14 +419,9 @@ class ProductCategoryAPITest extends TestCase
 
     public function test_product_category_api_call_update_with_random_code_and_slug_and_parent_has_been_used_on_products_expect_fail()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $parentCategory = ProductCategory::factory()->create();
 
@@ -485,25 +435,20 @@ class ProductCategoryAPITest extends TestCase
             ->for($parentCategory, 'parent')
             ->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/product-categories/'.$category->id, $updatedProductCategory);
+        $api = $this->json('POST', 'api/v1/product-category/'.$category->id, $updatedProductCategory);
 
         $api->assertStatus(422);
     }
 
     public function test_product_category_api_call_delete_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $productCategory = ProductCategory::factory()->create();
 
-        $api = $this->json('DELETE', 'api/v1/product-categories/'.$productCategory->id);
+        $api = $this->json('DELETE', 'api/v1/product-category/'.$productCategory->id);
 
         $api->assertSuccessful();
 

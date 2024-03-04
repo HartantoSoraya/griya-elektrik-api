@@ -87,16 +87,11 @@ class BranchAPITest extends TestCase
 
     public function test_branch_api_call_read_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
-        $api = $this->json('GET', 'api/v1/branches');
+        $api = $this->json('GET', 'api/v1/branch/read/any');
 
         $api->assertSuccessful();
     }
@@ -109,7 +104,7 @@ class BranchAPITest extends TestCase
 
         $branches = Branch::factory()->count(3)->create(['is_active' => true]);
 
-        $api = $this->json('GET', 'api/v1/branches/active');
+        $api = $this->json('GET', 'api/v1/branch/read/active');
 
         $api->assertSuccessful();
 
