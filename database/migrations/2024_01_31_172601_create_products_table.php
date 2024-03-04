@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('thumbnail');
             $table->longText('description');
-            $table->decimal('price');
+            $table->decimal('price', $precision = 16, $scale = 8)->default(0);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
             $table->string('slug')->unique();
