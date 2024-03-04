@@ -14,7 +14,7 @@ class StoreProductRequest extends FormRequest
             'product_brand_id' => 'required|exists:product_brands,id',
             'name' => 'required|string|max:255',
             'thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string|max:2000',
             'price' => 'required|numeric|min:0',
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
