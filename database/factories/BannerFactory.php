@@ -18,7 +18,8 @@ class BannerFactory extends Factory
     public function definition(): array
     {
         return [
-            'image' => UploadedFile::fake()->image('banner.jpg'),
+            'desktop_image' => UploadedFile::fake()->image('desktop_image.jpg'),
+            'mobile_image' => UploadedFile::fake()->image('mobile_image.jpg'),
         ];
     }
 }

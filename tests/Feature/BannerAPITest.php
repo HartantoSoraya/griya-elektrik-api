@@ -28,11 +28,13 @@ class BannerAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $banner['image'] = $api['data']['image'];
+        $banner['desktop_image'] = $api['data']['desktop_image'];
+        $banner['mobile_image'] = $api['data']['mobile_image'];
 
         $this->assertDatabaseHas('banners', $banner);
 
-        $this->assertTrue(Storage::disk('public')->exists($banner['image']));
+        $this->assertTrue(Storage::disk('public')->exists($banner['desktop_image']));
+        $this->assertTrue(Storage::disk('public')->exists($banner['mobile_image']));
     }
 
     public function test_banner_api_call_read_expect_collection()
@@ -68,11 +70,13 @@ class BannerAPITest extends TestCase
 
         $api->assertSuccessful();
 
-        $newBanner['image'] = $api['data']['image'];
+        $newBanner['desktop_image'] = $api['data']['desktop_image'];
+        $newBanner['mobile_image'] = $api['data']['mobile_image'];
 
         $this->assertDatabaseHas('banners', $newBanner);
 
-        $this->assertTrue(Storage::disk('public')->exists($newBanner['image']));
+        $this->assertTrue(Storage::disk('public')->exists($newBanner['desktop_image']));
+        $this->assertTrue(Storage::disk('public')->exists($newBanner['mobile_image']));
     }
 
     public function test_banner_api_call_delete_expect_successful()
@@ -89,6 +93,7 @@ class BannerAPITest extends TestCase
 
         $this->assertSoftDeleted('banners', $banner->toArray());
 
-        $this->assertFalse(Storage::disk('public')->exists($banner->image));
+        $this->assertFalse(Storage::disk('public')->exists($banner->desktop_image));
+        $this->assertFalse(Storage::disk('public')->exists($banner->mobile_image));
     }
 }
