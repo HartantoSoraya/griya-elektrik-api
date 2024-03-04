@@ -18,18 +18,13 @@ class BannerAPITest extends TestCase
 
     public function test_banner_api_call_create_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $banner = Banner::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/banners', $banner);
+        $api = $this->json('POST', 'api/v1/banner', $banner);
 
         $api->assertSuccessful();
 
@@ -42,18 +37,13 @@ class BannerAPITest extends TestCase
 
     public function test_banner_api_call_read_expect_collection()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $banners = Banner::factory()->count(3)->create();
 
-        $api = $this->json('GET', 'api/v1/banners');
+        $api = $this->json('GET', 'api/v1/banner/read/any');
 
         $api->assertSuccessful();
 
@@ -66,20 +56,15 @@ class BannerAPITest extends TestCase
 
     public function test_banner_api_call_update_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
-
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
 
         $banner = Banner::factory()->create();
 
         $newBanner = Banner::factory()->make()->toArray();
 
-        $api = $this->json('POST', 'api/v1/banners/'.$banner->id, $newBanner);
+        $api = $this->json('POST', 'api/v1/banner/'.$banner->id, $newBanner);
 
         $api->assertSuccessful();
 
@@ -92,18 +77,13 @@ class BannerAPITest extends TestCase
 
     public function test_banner_api_call_delete_expect_successful()
     {
-        $password = '1234567890';
-        $user = User::factory()->create(['password' => $password]);
+        $user = User::factory()->create();
 
         $this->actingAs($user);
 
-        $api = $this->json('POST', 'api/v1/login', array_merge($user->toArray(), ['password' => $password]));
-
-        $api->assertSuccessful();
-
         $banner = Banner::factory()->create();
 
-        $api = $this->json('DELETE', 'api/v1/banners/'.$banner->id);
+        $api = $this->json('DELETE', 'api/v1/banner/'.$banner->id);
 
         $api->assertSuccessful();
 
