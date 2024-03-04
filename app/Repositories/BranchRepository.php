@@ -131,7 +131,10 @@ class BranchRepository implements BranchRepositoryInterface
 
     public function getActiveBranch()
     {
-        return Branch::where('is_active', true)->get();
+        return Branch::where('is_active', true)
+            ->orderBy('is_main', 'desc')
+            ->orderBy('id', 'asc')
+            ->get();
     }
 
     public function deleteBranch(string $id)
