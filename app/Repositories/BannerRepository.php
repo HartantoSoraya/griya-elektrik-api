@@ -21,7 +21,8 @@ class BannerRepository implements BannerRepositoryInterface
     public function createBanner($data)
     {
         $banner = new Banner();
-        $banner->image = $data['image']->store('assets/banners', 'public');
+        $banner->desktop_image = $data['desktop_image']->store('assets/banners', 'public');
+        $banner->mobile_image = $data['mobile_image']->store('assets/banners', 'public');
         $banner->save();
 
         return $banner;
@@ -30,7 +31,8 @@ class BannerRepository implements BannerRepositoryInterface
     public function updateBanner($data, $id)
     {
         $banner = Banner::find($id);
-        $banner->image = $this->updateImage($banner->image, $data['image']);
+        $banner->desktop_image = $this->updateImage($banner->desktop_image, $data['desktop_image']);
+        $banner->mobile_image = $this->updateImage($banner->mobile_image, $data['mobile_image']);
         $banner->save();
 
         return $banner;

@@ -16,8 +16,10 @@ class BannerResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'image' => $this->image,
-            'image_url' => $this->image ? asset('storage/'.$this->image) : '',
+            'desktop_image' => $this->desktop_image,
+            'desktop_image_url' => $this->desktop_image ? asset('storage/'.$this->desktop_image) : '',
+            'mobile_image' => $this->mobile_image,
+            'mobile_image_url' => $this->mobile_image ? asset('storage/'.$this->mobile_image) : '',
         ];
     }
 }

@@ -13,6 +13,7 @@ class Banner extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'image',
+        'desktop_image',
+        'mobile_image',
     ];
 }
