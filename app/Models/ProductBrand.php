@@ -15,6 +15,7 @@ class ProductBrand extends Model
     protected $fillable = [
         'code',
         'name',
+        'logo',
         'slug',
     ];
 

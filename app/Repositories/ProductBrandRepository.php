@@ -4,12 +4,15 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductBrandRepositoryInterface;
 use App\Models\ProductBrand;
+use Illuminate\Support\Facades\Storage;
 
 class ProductBrandRepository implements ProductBrandRepositoryInterface
 {
     public function getAllBrand()
     {
-        return ProductBrand::all();
+        $productBrand = ProductBrand::orderBy('name', 'asc')->get();
+
+        return $productBrand;
     }
 
     public function getBrandById(string $id)
@@ -19,14 +22,25 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
 
     public function createBrand(array $data)
     {
-        return ProductBrand::create($data);
+        $productBrand = new ProductBrand();
+        $productBrand->code = $data['code'];
+        $productBrand->name = $data['name'];
+        $productBrand->logo = $data['logo']->store('assets/product-brands', 'public');
+        $productBrand->slug = $data['slug'];
+        $productBrand->save();
+
+        return $productBrand;
     }
 
     public function updateBrand(string $id, array $data)
     {
         $productBrand = ProductBrand::find($id);
 
-        $productBrand->update($data);
+        $productBrand->code = $data['code'];
+        $productBrand->name = $data['name'];
+        $productBrand->logo = $this->updateLogo($productBrand->logo, $data['logo']);
+        $productBrand->slug = $data['slug'];
+        $productBrand->save();
 
         return $productBrand;
     }
@@ -72,5 +86,18 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
         }
 
         return $result->count() == 0;
+    }
+
+    private function updateLogo($oldImage, $newImage): string
+    {
+        if ($oldImage) {
+            Storage::delete($oldImage);
+        }
+
+        if ($newImage) {
+            return $newImage->store('assets/product-brands', 'public');
+        }
+
+        return '';
     }
 }
