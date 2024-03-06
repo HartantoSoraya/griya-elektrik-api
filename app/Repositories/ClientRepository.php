@@ -24,7 +24,7 @@ class ClientRepository implements ClientRepositoryInterface
     {
         $client = new Client();
         $client->name = $data['name'];
-        $client->logo = $data['logo']->store('assets/clients', 'public');
+        $client->logo = $data['logo'] ? $data['logo']->store('assets/clients', 'public') : '';
         $client->url = $data['url'];
         $client->save();
 
