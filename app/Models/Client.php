@@ -12,6 +12,8 @@ class Client extends Model
     use HasFactory, SoftDeletes, UUID;
 
     protected $fillable = [
-        // Add your columns here
+        'name',
+        'logo',
+        'url',
     ];
 }
