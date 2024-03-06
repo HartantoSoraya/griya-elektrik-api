@@ -124,27 +124,28 @@ class ProductRepository implements ProductRepositoryInterface
         DB::beginTransaction();
 
         try {
-            $product = Product::find($id);
-            $product->code = $data['code'];
-            $product->product_category_id = $data['product_category_id'];
-            $product->product_brand_id = $data['product_brand_id'];
-            $product->name = $data['name'];
-            $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
-            $product->description = $data['description'];
-            $product->price = $data['price'];
-            if (isset($data['is_featured'])) {
-                $product->is_featured = $data['is_featured'];
-            }
-            if (isset($data['is_active'])) {
-                $product->is_active = $data['is_active'];
-            }
-            $product->slug = $data['slug'];
+            $product = Product::findOrFail($id);
+
+            $product->code = $data['code'] ?? $product->code;
+            $product->product_category_id = $data['product_category_id'] ?? $product->product_category_id;
+            $product->product_brand_id = $data['product_brand_id'] ?? $product->product_brand_id;
+            $product->name = $data['name'] ?? $product->name;
+            $product->description = $data['description'] ?? $product->description;
+            $product->price = $data['price'] ?? $product->price;
+            $product->is_featured = $data['is_featured'] ?? $product->is_featured;
+            $product->is_active = $data['is_active'] ?? $product->is_active;
+            $product->slug = $data['slug'] ?? $product->slug;
             $product->save();
 
-            if ($product->productImages->count() > 0) {
-                $this->deleteProductImages($product);
+            // Handle thumbnail update
+            if (isset($data['thumbnail'])) {
+                $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
+                $product->save();
             }
+
+            // Handle product images
             if (isset($data['product_images'])) {
+                $product->productImages()->delete(); // Clear existing images
                 foreach ($data['product_images'] as $image) {
                     $productImage = new ProductImage();
                     $productImage->product_id = $product->id;
@@ -153,8 +154,9 @@ class ProductRepository implements ProductRepositoryInterface
                 }
             }
 
-            $product->productLinks()->delete();
+            // Handle product links
             if (isset($data['product_links'])) {
+                $product->productLinks()->delete(); // Clear existing links
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();
                     $productLink->product_id = $product->id;
@@ -169,10 +171,10 @@ class ProductRepository implements ProductRepositoryInterface
             return $product;
         } catch (\Exception $e) {
             DB::rollBack();
-
             throw $e;
         }
     }
+
 
     public function updateFeaturedProduct(string $id, bool $is_featured)
     {
