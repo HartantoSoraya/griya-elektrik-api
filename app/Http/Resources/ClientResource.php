@@ -18,7 +18,7 @@ class ClientResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'logo' => $this->logo,
-            'logo_url' => $this->logo_url,
+            'logo_url' => $this->logo ? asset('storage/'.$this->logo) : '',
             'url' => $this->url,
         ];
     }
