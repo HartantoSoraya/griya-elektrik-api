@@ -147,7 +147,7 @@ class ProductBrandAPITest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($updatedProductBrand['logo']));
     }
 
-    public function test_product_brand_api_call_update_with_existing_code_and_random_slug_expect_failure()
+    public function test_product_brand_api_call_update_with_existing_code_in_different_product_brand_and_random_slug_expect_failure()
     {
         $user = User::factory()->create();
 
@@ -163,6 +163,29 @@ class ProductBrandAPITest extends TestCase
         $api = $this->json('POST', 'api/v1/product-brand/'.$productBrand->id, $updatedProductBrand);
 
         $api->assertStatus(422);
+    }
+
+    public function test_product_brand_api_call_update_with_existing_code_in_same_product_brand_and_random_slug_expect_successful()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $updatedProductBrand = ProductBrand::factory()->make(['code' => $productBrand->code])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-brand/'.$productBrand->id, $updatedProductBrand);
+
+        $api->assertSuccessful();
+
+        $updatedProductBrand['logo'] = $api['data']['logo'];
+
+        $this->assertDatabaseHas(
+            'product_brands', $updatedProductBrand
+        );
+
+        $this->assertTrue(Storage::disk('public')->exists($updatedProductBrand['logo']));
     }
 
     public function test_product_brand_api_call_delete_expect_successful()

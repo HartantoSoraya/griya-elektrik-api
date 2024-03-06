@@ -375,6 +375,39 @@ class ProductAPITest extends TestCase
         $this->assertTrue(Storage::disk('public')->exists($productUpdate['thumbnail']));
     }
 
+    public function test_product_api_call_update_with_existing_code_in_same_product_expect_successful()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $product = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->create();
+
+        $productUpdate = Product::factory()
+            ->for($productCategory, 'category')
+            ->for($productBrand, 'brand')
+            ->make(['code' => $product->code])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product/'.$product->id, $productUpdate);
+
+        $api->assertSuccessful();
+
+        $productUpdate['thumbnail'] = $api['data']['thumbnail'];
+
+        $this->assertDatabaseHas(
+            'products', $productUpdate
+        );
+
+        $this->assertTrue(Storage::disk('public')->exists($productUpdate['thumbnail']));
+    }
+
     public function test_product_api_call_set_active_product_expect_successful()
     {
         $user = User::factory()->create();

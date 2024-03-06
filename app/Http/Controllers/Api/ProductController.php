@@ -43,9 +43,10 @@ class ProductController extends Controller
         try {
             $search = $request->search ? $request->search : null;
             $categoryId = $request->categoryId ? $request->categoryId : null;
+            $brandId = $request->brandId ? $request->brandId : null;
             $sort = $request->sort ? $request->sort : null;
 
-            $products = $this->product->getAllActiveProducts($search, $categoryId, $sort);
+            $products = $this->product->getAllActiveProducts($search, $categoryId, $brandId, $sort);
 
             return ResponseHelper::jsonResponse(true, 'Success', ProductResource::collection($products), 200);
         } catch (\Exception $exception) {
