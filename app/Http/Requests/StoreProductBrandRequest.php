@@ -16,7 +16,7 @@ class StoreProductBrandRequest extends FormRequest
         return [
             'code' => 'required|string|max:255|unique:product_brands,code',
             'name' => 'required|string|max:255',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'nullable|string|max:255|unique:product_brands,slug',
         ];
     }
