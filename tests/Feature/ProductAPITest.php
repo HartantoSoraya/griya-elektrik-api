@@ -245,6 +245,31 @@ class ProductAPITest extends TestCase
         $this->assertEquals($productCount, count($api['data']));
     }
 
+    public function test_product_api_call_read_all_active_product_with_brand_expect_collection()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productCategory = ProductCategory::factory()->create();
+
+        ProductBrand::factory()->count(3)->create();
+
+        $brand = ProductBrand::inRandomOrder()->first();
+
+        Product::factory()
+            ->for($productCategory, 'category')
+            ->for($brand, 'brand')
+            ->setActive()->count(10)->create();
+
+        $api = $this->json('GET', 'api/v1/product/read/active?brandId='.$brand->id);
+
+        $api->assertSuccessful();
+
+        $productCount = Product::where('product_brand_id', $brand->id)->where('is_active', true)->count();
+        $this->assertEquals($productCount, count($api['data']));
+    }
+
     public function test_product_api_call_read_all_active_and_featured_product_expect_collection()
     {
         $user = User::factory()->create();
