@@ -32,11 +32,14 @@ class ProductBrandAPITest extends TestCase
         $api->assertSuccessful();
 
         $productBrand['code'] = $api['data']['code'];
+        $productBrand['logo'] = $api['data']['logo'];
         $productBrand['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_brands', $productBrand
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($productBrand['logo']));
     }
 
     public function test_product_brand_api_call_create_with_random_code_and_slug_expect_successful()
@@ -49,11 +52,15 @@ class ProductBrandAPITest extends TestCase
 
         $api = $this->json('POST', 'api/v1/product-brand', $productBrand);
 
+        $productBrand['logo'] = $api['data']['logo'];
+
         $api->assertSuccessful();
 
         $this->assertDatabaseHas(
             'product_brands', $productBrand
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($productBrand['logo']));
     }
 
     public function test_product_brand_api_call_create_with_existing_code_and_slug_expect_failure()
@@ -107,11 +114,14 @@ class ProductBrandAPITest extends TestCase
         $api->assertSuccessful();
 
         $updatedProductBrand['code'] = $api['data']['code'];
+        $updatedProductBrand['logo'] = $api['data']['logo'];
         $updatedProductBrand['slug'] = $api['data']['slug'];
 
         $this->assertDatabaseHas(
             'product_brands', $updatedProductBrand
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($updatedProductBrand['logo']));
     }
 
     public function test_product_brand_api_call_update_with_random_code_and_slug_expect_successful()
@@ -128,9 +138,13 @@ class ProductBrandAPITest extends TestCase
 
         $api->assertSuccessful();
 
+        $updatedProductBrand['logo'] = $api['data']['logo'];
+
         $this->assertDatabaseHas(
             'product_brands', $updatedProductBrand
         );
+
+        $this->assertTrue(Storage::disk('public')->exists($updatedProductBrand['logo']));
     }
 
     public function test_product_brand_api_call_update_with_existing_code_and_random_slug_expect_failure()

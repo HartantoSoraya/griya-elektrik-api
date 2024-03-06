@@ -16,6 +16,7 @@ class UpdateProductBrandRequest extends FormRequest
         return [
             'code' => 'required|string|max:255|unique:product_brands,code,'.$this->route('id'),
             'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'slug' => 'nullable|string|max:255|unique:product_brands,slug,'.$this->route('id'),
         ];
     }
@@ -24,6 +25,10 @@ class UpdateProductBrandRequest extends FormRequest
     {
         if (! $this->has('slug')) {
             $this->merge(['slug' => null]);
+        }
+
+        if (! $this->hasFile('logo')) {
+            $this->merge(['logo' => null]);
         }
     }
 }

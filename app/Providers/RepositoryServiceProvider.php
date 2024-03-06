@@ -29,6 +29,7 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
         $this->app->bind(WebConfigurationRepositoryInterface::class, WebConfigurationRepository::class);
         $this->app->bind(BannerRepositoryInterface::class, BannerRepository::class);
         $this->app->bind(BranchRepositoryInterface::class, BranchRepository::class);
@@ -37,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ProductBrandRepositoryInterface::class, ProductBrandRepository::class);
         $this->app->bind(ProductRepositoryInterface::class, ProductRepository::class);
         $this->app->bind(ProductLinkRepositoryInterface::class, ProductLinkRepository::class);
+        $this->app->bind(\App\Interfaces\ClientRepositoryInterface::class, \App\Repositories\ClientRepository::class);
     }
 
     /**

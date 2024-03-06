@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 
 /**
@@ -23,6 +24,7 @@ class ProductBrandFactory extends Factory
         return [
             'code' => Str::upper(Str::random(10)),
             'name' => $this->faker->unique()->word,
+            'logo' => UploadedFile::fake()->image('logo.jpg'),
             'slug' => Str::slug($name.'-'.$code),
         ];
     }

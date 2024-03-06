@@ -7,20 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductBrand extends Model
+class Client extends Model
 {
-    use HasFactory, UUID;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes, UUID;
 
     protected $fillable = [
-        'code',
         'name',
         'logo',
-        'slug',
+        'url',
     ];
-
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
 }

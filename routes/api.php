@@ -37,6 +37,9 @@ Route::get('product/read/active-featured', [App\Http\Controllers\Api\ProductCont
 Route::get('product/{id}', [App\Http\Controllers\Api\ProductController::class, 'show']);
 Route::get('product/slug/{slug}', [App\Http\Controllers\Api\ProductController::class, 'readProductBySlug']);
 
+Route::get('client/read/any', [App\Http\Controllers\Api\ClientController::class, 'index']);
+Route::get('client/{id}', [App\Http\Controllers\Api\ClientController::class, 'show']);
+
 Route::post('login', [App\Http\Controllers\Api\AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -67,6 +70,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('product/{id}/featured', [App\Http\Controllers\Api\ProductController::class, 'updateFeaturedProduct']);
     Route::delete('product/{id}', [App\Http\Controllers\Api\ProductController::class, 'destroy']);
     route::delete('product/{id}/image', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
+
+    Route::post('client', [App\Http\Controllers\Api\ClientController::class, 'store']);
+    Route::post('client/{id}', [App\Http\Controllers\Api\ClientController::class, 'update']);
+    Route::delete('client/{id}', [App\Http\Controllers\Api\ClientController::class, 'destroy']);
 
     Route::get('me', [App\Http\Controllers\Api\AuthController::class, 'me']);
 });
