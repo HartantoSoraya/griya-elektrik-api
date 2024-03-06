@@ -260,7 +260,7 @@ class ProductAPITest extends TestCase
         Product::factory()
             ->for($productCategory, 'category')
             ->for($brand, 'brand')
-            ->setActive()->count(10)->create();
+            ->setActive()->count(5)->create();
 
         $api = $this->json('GET', 'api/v1/product/read/active?brandId='.$brand->id);
 
