@@ -25,7 +25,7 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
         $productBrand = new ProductBrand();
         $productBrand->code = $data['code'];
         $productBrand->name = $data['name'];
-        $productBrand->logo = $data['logo']->store('assets/product-brands', 'public');
+        $productBrand->logo = $data['logo'] ? $data['logo']->store('assets/product-brands', 'public') : '';
         $productBrand->slug = $data['slug'];
         $productBrand->save();
 
