@@ -14,7 +14,7 @@ class UpdateClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255|unique:clients,name,'.$this->route('client'),
+            'name' => 'required|string|max:255|unique:clients,name,'.$this->route('id').',id',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'url' => 'nullable|url',
         ];
