@@ -97,6 +97,27 @@ class ClientAPITest extends TestCase
         );
     }
 
+    public function test_client_api_call_update_with_existing_name_in_same_client_expect_successful()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $client = Client::factory()->create();
+
+        $updatedClient = Client::factory()->make(['name' => $client->name])->toArray();
+
+        $api = $this->json('POST', 'api/v1/client/'.$client->id, $updatedClient);
+
+        $api->assertSuccessful();
+
+        $updatedClient['logo'] = $api['data']['logo'];
+
+        $this->assertDatabaseHas(
+            'clients', $updatedClient
+        );
+    }
+
     public function test_client_api_call_delete_expect_successful()
     {
         $user = User::factory()->create();

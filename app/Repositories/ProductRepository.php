@@ -18,7 +18,7 @@ class ProductRepository implements ProductRepositoryInterface
         return $query->get();
     }
 
-    public function getAllActiveProducts($search = null, $categoryId = null, $sort = null)
+    public function getAllActiveProducts($search = null, $categoryId = null, $brandId = null, $sort = null)
     {
         $query = Product::with('category', 'brand');
 
@@ -31,6 +31,10 @@ class ProductRepository implements ProductRepositoryInterface
             $categoryIds = $productCategoryRepository->getDescendantCategories($categoryId);
 
             $query->whereIn('product_category_id', $categoryIds);
+        }
+
+        if ($brandId) {
+            $query->where('product_brand_id', $brandId);
         }
 
         $query->where('is_active', true);

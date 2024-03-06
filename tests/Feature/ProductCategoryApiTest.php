@@ -440,6 +440,28 @@ class ProductCategoryAPITest extends TestCase
         $api->assertStatus(422);
     }
 
+    public function test_prodcut_category_api_call_update_with_existing_code_in_same_product_category_and_random_slug_expect_successful()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $updatedProductCategory = ProductCategory::factory()->make(['code' => $productCategory->code])->toArray();
+
+        $api = $this->json('POST', 'api/v1/product-category/'.$productCategory->id, $updatedProductCategory);
+
+        $api->assertSuccessful();
+
+        $updatedProductCategory['image'] = $api['data']['image'];
+
+        $this->assertDatabaseHas(
+            'product_categories',
+            $updatedProductCategory
+        );
+    }
+
     public function test_product_category_api_call_delete_expect_successful()
     {
         $user = User::factory()->create();

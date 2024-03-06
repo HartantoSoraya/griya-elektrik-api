@@ -259,7 +259,24 @@ class BranchAPITest extends TestCase
         $this->assertDatabaseHas('branches', $updatedBranch);
     }
 
-    public function test_branch_api_call_update_with_existing_code_expect_failure()
+    public function test_branch_api_call_update_with_existing_code_in_same_branch_expect_successful()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $branch = Branch::factory()->create();
+
+        $newBranch = Branch::factory()->make(['code' => $branch->code])->toArray();
+
+        $api = $this->json('POST', 'api/v1/branch/'.$branch->id, $newBranch);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas('branches', $newBranch);
+    }
+
+    public function test_branch_api_call_update_with_existing_code_in_different_branch_expect_failure()
     {
         $password = '1234567890';
         $user = User::factory()->create(['password' => $password]);
