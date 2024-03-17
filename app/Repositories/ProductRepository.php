@@ -129,21 +129,19 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
-            $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
+
+            if (isset($data['thumbnail'])) {
+                Storage::disk('public')->delete($product->thumbnail);
+                $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
+            }
+
             $product->description = $data['description'];
             $product->price = $data['price'];
-            if (isset($data['is_featured'])) {
-                $product->is_featured = $data['is_featured'];
-            }
-            if (isset($data['is_active'])) {
-                $product->is_active = $data['is_active'];
-            }
+            $product->is_featured = $data['is_featured'];
+            $product->is_active = $data['is_active'];
             $product->slug = $data['slug'];
             $product->save();
 
-            if ($product->productImages->count() > 0) {
-                $this->deleteProductImages($product);
-            }
             if (isset($data['product_images'])) {
                 foreach ($data['product_images'] as $image) {
                     $productImage = new ProductImage();
@@ -153,7 +151,6 @@ class ProductRepository implements ProductRepositoryInterface
                 }
             }
 
-            $product->productLinks()->delete();
             if (isset($data['product_links'])) {
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();
@@ -172,6 +169,7 @@ class ProductRepository implements ProductRepositoryInterface
 
             throw $e;
         }
+
     }
 
     public function updateFeaturedProduct(string $id, bool $is_featured)
@@ -195,11 +193,6 @@ class ProductRepository implements ProductRepositoryInterface
     public function deleteProduct(string $id)
     {
         return Product::find($id)->delete();
-    }
-
-    public function deleteProductImage(string $id)
-    {
-        return ProductImage::find($id)->delete();
     }
 
     public function generateCode(int $tryCount): string
@@ -238,24 +231,5 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $result->count() == 0 ? true : false;
-    }
-
-    private function updateThumbnail($oldThumbnail, $newThumbnail)
-    {
-        if ($oldThumbnail) {
-            Storage::disk('public')->delete($oldThumbnail);
-        }
-
-        return $newThumbnail->store('assets/products/thumbnails', 'public');
-    }
-
-    private function deleteProductImages(Product $product)
-    {
-        $productImages = $product->productImages;
-        foreach ($productImages as $productImage) {
-            Storage::disk('public')->delete($productImage->image);
-        }
-
-        $product->productImages()->delete();
     }
 }

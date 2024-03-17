@@ -24,8 +24,6 @@ interface ProductRepositoryInterface
 
     public function deleteProduct(string $id);
 
-    public function deleteProductImage(string $id);
-
     public function generateCode(int $tryCount);
 
     public function isUniqueCode(string $code, ?string $expectId = null);
