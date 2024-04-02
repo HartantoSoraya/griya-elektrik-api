@@ -146,7 +146,7 @@ class BranchRepository implements BranchRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = Branch::count() + $tryCount;
+        $count = Branch::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;

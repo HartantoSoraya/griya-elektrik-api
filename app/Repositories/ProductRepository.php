@@ -129,7 +129,9 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
-            $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
+            if ($data['thumbnail']) {
+                $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
+            }
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->is_featured = $data['is_featured'];
@@ -149,6 +151,9 @@ class ProductRepository implements ProductRepositoryInterface
                 }
             }
 
+            if ($product->productLinks->count() > 0) {
+                $product->productLinks()->delete();
+            }
             if (isset($data['product_links'])) {
                 foreach ($data['product_links'] as $link) {
                     $productLink = new ProductLink();
@@ -195,7 +200,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = Product::count() + $tryCount;
+        $count = Product::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;

@@ -58,7 +58,7 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = ProductBrand::count() + $tryCount;
+        $count = ProductBrand::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;

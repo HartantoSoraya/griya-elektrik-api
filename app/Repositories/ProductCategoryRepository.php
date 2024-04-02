@@ -10,7 +10,9 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 {
     public function getAllCategory()
     {
-        return ProductCategory::all();
+        $productCategory = ProductCategory::orderBy('name', 'desc')->get();
+
+        return $productCategory;
     }
 
     public function getRootCategories()
@@ -104,7 +106,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = ProductCategory::count() + $tryCount;
+        $count = ProductCategory::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;
