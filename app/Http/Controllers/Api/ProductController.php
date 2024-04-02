@@ -236,15 +236,4 @@ class ProductController extends Controller
             return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
         }
     }
-
-    public function deleteProductImage($id)
-    {
-        try {
-            $this->product->deleteProductImage($id);
-
-            return ResponseHelper::jsonResponse(true, 'Success', null, 200);
-        } catch (\Exception $exception) {
-            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
-        }
-    }
 }
