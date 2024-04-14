@@ -234,12 +234,12 @@ class ProductAPITest extends TestCase
             ->for(ProductBrand::inRandomOrder()->first(), 'brand')
             ->setActive()->count(10)->create();
 
-        $api = $this->json('GET', 'api/v1/product/read/active?categoryId='.$rootCategory->id);
+        $api = $this->json('GET', 'api/v1/product/read/active?categorySlug='.$rootCategory->slug);
 
         $api->assertSuccessful();
 
         $productCategoryRepository = new ProductCategoryRepository();
-        $categoryIds = $productCategoryRepository->getDescendantCategories($rootCategory->id);
+        $categoryIds = $productCategoryRepository->getDescendantCategories($rootCategory->slug);
 
         $productCount = Product::whereIn('product_category_id', $categoryIds)->where('is_active', true)->count();
         $this->assertEquals($productCount, count($api['data']));
@@ -262,7 +262,7 @@ class ProductAPITest extends TestCase
             ->for($brand, 'brand')
             ->setActive()->count(5)->create();
 
-        $api = $this->json('GET', 'api/v1/product/read/active?brandId='.$brand->id);
+        $api = $this->json('GET', 'api/v1/product/read/active?brandSlug='.$brand->slug);
 
         $api->assertSuccessful();
 

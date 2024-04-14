@@ -8,6 +8,8 @@ interface ProductBrandRepositoryInterface
 
     public function getBrandById(string $id);
 
+    public function getBrandBySlug(string $slug);
+
     public function createBrand(array $data);
 
     public function updateBrand(string $id, array $data);

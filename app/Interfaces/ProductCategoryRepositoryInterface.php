@@ -16,6 +16,8 @@ interface ProductCategoryRepositoryInterface
 
     public function getCategoryById(string $id);
 
+    public function getCategoryBySlug(string $slug);
+
     public function createCategory(array $data);
 
     public function updateCategory(string $id, array $data);

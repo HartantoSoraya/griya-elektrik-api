@@ -20,6 +20,11 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
         return ProductBrand::find($id);
     }
 
+    public function getBrandBySlug(string $slug)
+    {
+        return ProductBrand::where('slug', $slug)->first();
+    }
+
     public function createBrand(array $data)
     {
         $productBrand = new ProductBrand();

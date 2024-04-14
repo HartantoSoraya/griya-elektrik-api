@@ -18,7 +18,7 @@ class ProductRepository implements ProductRepositoryInterface
         return $query->get();
     }
 
-    public function getAllActiveProducts($search = null, $categoryId = null, $brandId = null, $sort = null)
+    public function getAllActiveProducts($search = null, $categorySlug = null, $brandSlug = null, $sort = null)
     {
         $query = Product::with('category', 'brand');
 
@@ -26,14 +26,17 @@ class ProductRepository implements ProductRepositoryInterface
             $query->where('name', 'like', '%'.$search.'%');
         }
 
-        if ($categoryId) {
+        if ($categorySlug) {
             $productCategoryRepository = new ProductCategoryRepository();
+            $categoryId = $productCategoryRepository->getCategoryBySlug($categorySlug)->id;
             $categoryIds = $productCategoryRepository->getDescendantCategories($categoryId);
 
             $query->whereIn('product_category_id', $categoryIds);
         }
 
-        if ($brandId) {
+        if ($brandSlug) {
+            $productBrandRepository = new ProductBrandRepository();
+            $brandId = $productBrandRepository->getBrandBySlug($brandSlug)->id;
             $query->where('product_brand_id', $brandId);
         }
 

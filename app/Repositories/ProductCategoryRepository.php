@@ -70,6 +70,11 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return ProductCategory::find($id);
     }
 
+    public function getCategoryBySlug(string $slug)
+    {
+        return ProductCategory::where('slug', $slug)->first();
+    }
+
     public function createCategory(array $data)
     {
         $productCategory = new ProductCategory();

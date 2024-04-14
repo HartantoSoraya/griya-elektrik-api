@@ -136,6 +136,21 @@ class ProductCategoryController extends Controller
         }
     }
 
+    public function readCategoryBySlug($slug)
+    {
+        try {
+            $productCategory = $this->productCategory->getCategoryBySlug($slug);
+
+            if ($productCategory) {
+                return ResponseHelper::jsonResponse(true, 'Success', new ProductCategoryResource($productCategory), 200);
+            }
+
+            return ResponseHelper::jsonResponse(false, 'Data not found', null, 404);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *

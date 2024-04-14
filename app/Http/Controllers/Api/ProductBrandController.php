@@ -95,6 +95,21 @@ class ProductBrandController extends Controller
         }
     }
 
+    public function readBrandBySlug($slug)
+    {
+        try {
+            $productBrand = $this->productBrand->getBrandBySlug($slug);
+
+            if ($productBrand) {
+                return ResponseHelper::jsonResponse(true, 'Success', new ProductBrandResource($productBrand), 200);
+            }
+
+            return ResponseHelper::jsonResponse(false, 'Data not found', null, 404);
+        } catch (\Exception $exception) {
+            return ResponseHelper::jsonResponse(false, $exception->getMessage(), null, 500);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      *
