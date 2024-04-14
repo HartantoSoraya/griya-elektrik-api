@@ -27,4 +27,8 @@ interface ProductCategoryRepositoryInterface
     public function isUniqueCode(string $code, ?string $expectId = null);
 
     public function isUniqueSlug(string $slug, ?string $expectId = null);
+
+    public function isDescendantCategory(string $categoryId, string $parentId);
+
+    public function isAncestor($parentId, $categoryId): bool;
 }

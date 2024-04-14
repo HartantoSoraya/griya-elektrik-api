@@ -79,10 +79,10 @@ class ProductCategoryController extends Controller
         $request = $request->validated();
 
         try {
-            if (isset($request['parent_id'])) {
+            if ($request['parent_id']) {
                 $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
 
-                if ($parentCategory && $parentCategory->products()->exists()) {
+                if ($parentCategory->products()->exists()) {
                     return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
                 }
             }
@@ -148,12 +148,25 @@ class ProductCategoryController extends Controller
         $request = $request->validated();
 
         try {
-            if (isset($request['parent_id'])) {
-                if ($request['parent_id']) {
-                    $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
+            if ($request['parent_id']) {
+                $category = $this->productCategory->getCategoryById($id);
+                $parentCategory = $this->productCategory->getCategoryById($request['parent_id']);
 
-                    if ($parentCategory && $parentCategory->products()->exists()) {
-                        return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                if ($parentCategory->products()->exists()) {
+                    return ResponseHelper::jsonResponse(false, 'Parent category is used in a product, cannot save.', null, 422);
+                }
+
+                if ($parentCategory->id == $id) {
+                    return ResponseHelper::jsonResponse(false, 'Invalid category hierarchy: cannot be its own parent.', null, 422);
+                }
+
+                if ($this->productCategory->isAncestor($request['parent_id'], $id)) {
+                    return ResponseHelper::jsonResponse(false, 'Invalid category hierarchy: cannot be a descendant of itself.', null, 422);
+                }
+
+                if ($category->children()->exists()) {
+                    if ($category->parent_id != $request['parent_id']) {
+                        return ResponseHelper::jsonResponse(false, 'Cannot change parent category because it has children.', null, 422);
                     }
                 }
             }

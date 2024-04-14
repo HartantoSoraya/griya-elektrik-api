@@ -150,4 +150,36 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 
         return $newImage->store('assets/product-categories', 'public');
     }
+
+    public function isDescendantCategory($ancestorId, $categoryId)
+    {
+        $category = $this->getCategoryById($categoryId);
+
+        if (! $category) {
+            return false;
+        }
+
+        while ($category) {
+            if ($category->parent_id === $ancestorId) {
+                return true;
+            }
+
+            $category = $this->getCategoryById($category->parent_id);
+        }
+
+        return false;
+    }
+
+    public function isAncestor($parentId, $categoryId): bool
+    {
+        $currentParentId = $parentId;
+        while (! is_null($currentParentId)) {
+            if ($currentParentId == $categoryId) {
+                return true;
+            }
+            $currentParentId = ProductCategory::find($currentParentId)->parent_id;
+        }
+
+        return false;
+    }
 }
