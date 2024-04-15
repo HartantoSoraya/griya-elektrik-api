@@ -27,9 +27,11 @@ Route::get('product-category/read/root', [App\Http\Controllers\Api\ProductCatego
 Route::get('product-category/read/leaf', [App\Http\Controllers\Api\ProductCategoryController::class, 'readLeafCategories']);
 Route::get('product-category/read/no-product', [App\Http\Controllers\Api\ProductCategoryController::class, 'readEmptyCategories']);
 Route::get('product-category/{id}', [App\Http\Controllers\Api\ProductCategoryController::class, 'show']);
+Route::get('product-category/slug/{slug}', [App\Http\Controllers\Api\ProductCategoryController::class, 'readCategoryBySlug']);
 
 Route::get('product-brand/read/any', [App\Http\Controllers\Api\ProductBrandController::class, 'index']);
 Route::get('product-brands/{id}', [App\Http\Controllers\Api\ProductBrandController::class, 'show']);
+Route::get('product-brand/slug/{slug}', [App\Http\Controllers\Api\ProductBrandController::class, 'readBrandBySlug']);
 
 Route::get('product/read/any', [App\Http\Controllers\Api\ProductController::class, 'index']);
 Route::get('product/read/active', [App\Http\Controllers\Api\ProductController::class, 'readAllActiveProducts']);
@@ -69,8 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('product/{id}/active', [App\Http\Controllers\Api\ProductController::class, 'updateActiveProduct']);
     Route::post('product/{id}/featured', [App\Http\Controllers\Api\ProductController::class, 'updateFeaturedProduct']);
     Route::delete('product/{id}', [App\Http\Controllers\Api\ProductController::class, 'destroy']);
-    route::delete('product-image/{id}', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
-
+    route::delete('product/image/{id}', [App\Http\Controllers\Api\ProductController::class, 'deleteImage']);
     Route::post('client', [App\Http\Controllers\Api\ClientController::class, 'store']);
     Route::post('client/{id}', [App\Http\Controllers\Api\ClientController::class, 'update']);
     Route::delete('client/{id}', [App\Http\Controllers\Api\ClientController::class, 'destroy']);

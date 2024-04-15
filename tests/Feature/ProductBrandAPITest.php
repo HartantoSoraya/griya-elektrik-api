@@ -99,6 +99,23 @@ class ProductBrandAPITest extends TestCase
         }
     }
 
+    public function test_product_brand_api_call_read_by_slug_expect_collection()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productBrand = ProductBrand::factory()->create();
+
+        $api = $this->json('GET', 'api/v1/product-brand/slug/'.$productBrand->slug);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas(
+            'product_brands', $productBrand->toArray()
+        );
+    }
+
     public function test_product_brand_api_call_update_with_auto_code_and_empty_slug_expect_successful()
     {
         $user = User::factory()->create();

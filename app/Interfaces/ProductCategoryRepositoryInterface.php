@@ -16,6 +16,8 @@ interface ProductCategoryRepositoryInterface
 
     public function getCategoryById(string $id);
 
+    public function getCategoryBySlug(string $slug);
+
     public function createCategory(array $data);
 
     public function updateCategory(string $id, array $data);
@@ -27,4 +29,8 @@ interface ProductCategoryRepositoryInterface
     public function isUniqueCode(string $code, ?string $expectId = null);
 
     public function isUniqueSlug(string $slug, ?string $expectId = null);
+
+    public function isDescendantCategory(string $categoryId, string $parentId);
+
+    public function isAncestor($parentId, $categoryId): bool;
 }

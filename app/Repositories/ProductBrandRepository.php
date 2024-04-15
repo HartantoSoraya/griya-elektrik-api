@@ -20,6 +20,11 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
         return ProductBrand::find($id);
     }
 
+    public function getBrandBySlug(string $slug)
+    {
+        return ProductBrand::where('slug', $slug)->first();
+    }
+
     public function createBrand(array $data)
     {
         $productBrand = new ProductBrand();
@@ -36,9 +41,15 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
     {
         $productBrand = ProductBrand::find($id);
 
+        if ($data['delete_logo']) {
+            Storage::disk('public')->delete($productBrand->logo);
+        }
+
         $productBrand->code = $data['code'];
         $productBrand->name = $data['name'];
-        $productBrand->logo = $this->updateLogo($productBrand->logo, $data['logo']);
+        if ($data['logo']) {
+            $productBrand->logo = $this->updateLogo($productBrand->logo, $data['logo']);
+        }
         $productBrand->slug = $data['slug'];
         $productBrand->save();
 
@@ -52,7 +63,7 @@ class ProductBrandRepository implements ProductBrandRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = ProductBrand::count() + $tryCount;
+        $count = ProductBrand::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;

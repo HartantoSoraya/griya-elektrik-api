@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\ImageHelper\ImageHelper;
 use App\Models\WebConfiguration;
 use Illuminate\Database\Seeder;
-use Illuminate\Http\UploadedFile;
 
 class WebConfigurationTableSeeder extends Seeder
 {
@@ -13,7 +13,9 @@ class WebConfigurationTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $logo = UploadedFile::fake()->image('logo.png');
+        $imageHelper = new ImageHelper();
+
+        $logo = $imageHelper->createDummyImageWithTextSizeAndPosition(200, 200, 'center', 'center', null, 'large');
 
         WebConfiguration::factory()->create([
             'title' => 'Griya Lima Belas',

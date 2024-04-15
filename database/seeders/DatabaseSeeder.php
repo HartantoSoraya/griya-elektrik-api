@@ -14,6 +14,11 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(WebConfigurationTableSeeder::class);
+        $this->call(BannerSeeder::class);
+        $this->call(ProductCategorySeeder::class);
+        $this->call(ProductBrandSeeder::class);
+        $this->call(ProductSeeder::class);
         $this->call(BranchTableSeeder::class);
+        $this->call(ClientSeeder::class);
     }
 }

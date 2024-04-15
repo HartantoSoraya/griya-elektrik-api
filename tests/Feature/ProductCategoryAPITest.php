@@ -183,6 +183,24 @@ class ProductCategoryAPITest extends TestCase
         }
     }
 
+    public function test_product_category_api_call_read_by_slug_expect_collection()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        $productCategory = ProductCategory::factory()->create();
+
+        $api = $this->json('GET', 'api/v1/product-category/slug/'.$productCategory->slug);
+
+        $api->assertSuccessful();
+
+        $this->assertDatabaseHas(
+            'product_categories',
+            $productCategory->toArray()
+        );
+    }
+
     public function test_product_category_api_call_read_root_categories_expect_collection()
     {
         $user = User::factory()->create();

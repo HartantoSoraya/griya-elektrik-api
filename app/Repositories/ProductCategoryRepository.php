@@ -10,7 +10,9 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 {
     public function getAllCategory()
     {
-        return ProductCategory::all();
+        $productCategory = ProductCategory::orderBy('name', 'desc')->get();
+
+        return $productCategory;
     }
 
     public function getRootCategories()
@@ -68,6 +70,11 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         return ProductCategory::find($id);
     }
 
+    public function getCategoryBySlug(string $slug)
+    {
+        return ProductCategory::where('slug', $slug)->first();
+    }
+
     public function createCategory(array $data)
     {
         $productCategory = new ProductCategory();
@@ -88,7 +95,9 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->parent_id = $data['parent_id'];
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
-        $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
+        if ($data['image']) {
+            $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
+        }
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 
@@ -102,7 +111,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
 
     public function generateCode(int $tryCount): string
     {
-        $count = ProductCategory::count() + $tryCount;
+        $count = ProductCategory::withTrashed()->count() + $tryCount;
         $code = str_pad($count, 2, '0', STR_PAD_LEFT);
 
         return $code;
@@ -141,9 +150,41 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
     private function updateImage($oldImage, $newImage): string
     {
         if ($oldImage) {
-            Storage::delete($oldImage);
+            Storage::disk('public')->delete($oldImage);
         }
 
         return $newImage->store('assets/product-categories', 'public');
+    }
+
+    public function isDescendantCategory($ancestorId, $categoryId)
+    {
+        $category = $this->getCategoryById($categoryId);
+
+        if (! $category) {
+            return false;
+        }
+
+        while ($category) {
+            if ($category->parent_id === $ancestorId) {
+                return true;
+            }
+
+            $category = $this->getCategoryById($category->parent_id);
+        }
+
+        return false;
+    }
+
+    public function isAncestor($parentId, $categoryId): bool
+    {
+        $currentParentId = $parentId;
+        while (! is_null($currentParentId)) {
+            if ($currentParentId == $categoryId) {
+                return true;
+            }
+            $currentParentId = ProductCategory::find($currentParentId)->parent_id;
+        }
+
+        return false;
     }
 }

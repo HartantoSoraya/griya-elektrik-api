@@ -31,7 +31,7 @@ class ProductFactory extends Factory
             'name' => $name,
             'thumbnail' => UploadedFile::fake()->image('thumbnail.jpg'),
             'description' => $this->faker->sentence,
-            'price' => $this->faker->numberBetween(100, 1000),
+            'price' => $this->faker->numberBetween(10, 10000) * 1000,
             'is_featured' => $this->faker->boolean,
             'is_active' => $this->faker->boolean,
             'slug' => Str::slug($name.'-'.$code),
