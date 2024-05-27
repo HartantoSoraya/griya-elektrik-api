@@ -18,6 +18,7 @@ class StoreProductCategoryRequest extends FormRequest
             'code' => 'required|string|max:255|unique:product_categories,code',
             'name' => 'required|max:255|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'sort_order' => 'nullable|integer',
             'slug' => 'nullable|string|max:255|unique:product_categories,slug',
         ];
     }

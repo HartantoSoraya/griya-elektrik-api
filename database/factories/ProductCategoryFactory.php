@@ -88,6 +88,7 @@ class ProductCategoryFactory extends Factory
             'code' => $code,
             'name' => $name,
             'image' => UploadedFile::fake()->image('image.jpg'),
+            'sort_order' => mt_rand(1, 100),
             'slug' => Str::slug($name.'-'.$code),
         ];
     }
