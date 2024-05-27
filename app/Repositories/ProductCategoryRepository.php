@@ -82,6 +82,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
         $productCategory->image = $data['image']->store('assets/product-categories', 'public');
+        $productCategory->sort_order = $data['sort_order'];
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 
@@ -98,6 +99,7 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         if ($data['image']) {
             $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
         }
+        $productCategory->sort_order = $data['sort_order'];
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 

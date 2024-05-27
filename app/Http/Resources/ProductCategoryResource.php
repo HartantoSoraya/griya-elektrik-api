@@ -28,6 +28,7 @@ class ProductCategoryResource extends JsonResource
             'product_count' => $this->products->count(),
             'image' => $this->image,
             'image_url' => $this->image ? asset('storage/'.$this->image) : '',
+            'sort_order' => $this->sort_order,
             'slug' => $this->slug,
         ];
     }

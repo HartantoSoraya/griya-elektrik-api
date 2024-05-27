@@ -17,6 +17,7 @@ class ProductCategory extends Model
         'code',
         'name',
         'image',
+        'sort_order',
         'slug',
     ];
 
@@ -27,12 +28,12 @@ class ProductCategory extends Model
 
     public static function getRootCategories()
     {
-        return static::with('childrenRecursive')->whereNull('parent_id')->get();
+        return static::with('childrenRecursive')->whereNull('parent_id')->orderBy('sort_order')->get();
     }
 
     public function children()
     {
-        return $this->hasMany(ProductCategory::class, 'parent_id', 'id');
+        return $this->hasMany(ProductCategory::class, 'parent_id', 'id')->orderBy('sort_order');
     }
 
     public function childrenRecursive()
