@@ -20,7 +20,7 @@ class UpdateProductRequest extends FormRequest
             'is_active' => 'boolean',
             'slug' => 'nullable|string|max:255|unique:products,slug,'.$this->route('id').',id',
             'product_images' => 'nullable|array',
-            'product_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'product_images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:15360',
             'deleted_images' => 'nullable|array',
             'deleted_images.*' => 'string|distinct|exists:product_images,id',
             'product_links' => 'nullable|array',
