@@ -132,9 +132,7 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
-            if ($data['thumbnail']) {
-                $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
-            }
+            $product->thumbnail = $this->updateThumbnail($product->thumbnail, $data['thumbnail']);
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->is_featured = $data['is_featured'];
@@ -241,11 +239,15 @@ class ProductRepository implements ProductRepositoryInterface
 
     private function updateThumbnail($oldThumbnail, $newThumbnail)
     {
-        if ($oldThumbnail) {
-            Storage::disk('public')->delete($oldThumbnail);
-        }
+        if ($newThumbnail) {
+            if ($oldThumbnail) {
+                Storage::disk('public')->delete($oldThumbnail);
+            }
 
-        return $newThumbnail->store('assets/products/thumbnails', 'public');
+            return $newThumbnail->store('assets/products/thumbnails', 'public');
+        } else {
+            return $oldThumbnail;
+        }
     }
 
     private function deleteProductImages(array $imageIds)
