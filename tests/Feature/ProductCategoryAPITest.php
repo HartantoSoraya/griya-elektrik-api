@@ -15,7 +15,7 @@ class ProductCategoryAPITest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        mt_rand(0, 1) && Storage::fake('public');
     }
 
     /**
