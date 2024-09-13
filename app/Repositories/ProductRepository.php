@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\ImageHelper\ImageHelper;
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -85,7 +86,8 @@ class ProductRepository implements ProductRepositoryInterface
             $product->product_category_id = $data['product_category_id'];
             $product->product_brand_id = $data['product_brand_id'];
             $product->name = $data['name'];
-            $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
+            // $product->thumbnail = $data['thumbnail']->store('assets/products/thumbnails', 'public');
+            $product->thumbnail = $this->saveThumbnail($data['thumbnail']);
             $product->description = $data['description'];
             $product->price = $data['price'];
             $product->is_featured = $data['is_featured'];
@@ -119,6 +121,26 @@ class ProductRepository implements ProductRepositoryInterface
             DB::rollBack();
 
             throw $e;
+        }
+    }
+
+    private function saveThumbnail($thumbnail)
+    {
+        if ($thumbnail) {
+            $path = $thumbnail->store('assets/products/thumbnails', 'public');
+
+            // $path = asset('storage/'.$path);
+            // $path_new = $_SERVER['DOCUMENT_ROOT'].'/storage/'.$path;
+            // $path = storage_path($path);
+            // $path = storage_path('public/'.$path);
+            // $storagePath = storage_path('app/public/'.$path);
+            $storagePath = Storage::disk('public')->path($path);
+            $imageHelper = new ImageHelper();
+            $imageHelper->resizeImage($storagePath, $storagePath, 500, 500);
+
+            return $path;
+        } else {
+            return null;
         }
     }
 
@@ -174,6 +196,27 @@ class ProductRepository implements ProductRepositoryInterface
             throw $e;
         }
 
+    }
+
+    private function updateThumbnail($oldImagePath, $newImage)
+    {
+        if ($newImage) {
+            if ($oldImagePath) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
+
+            $path = $newImage->store('assets/products/thumbnails', 'public');
+
+            // $storagePath = $_SERVER['DOCUMENT_ROOT'].'/storage/'.$newThumbnail;
+            // $storagePath = storage_path('app/public/'.$newThumbnail);
+            $storagePath = Storage::disk('public')->path($path);
+            $imageHelper = new ImageHelper();
+            $imageHelper->resizeImage($storagePath, $storagePath, 500, 500);
+
+            return $path;
+        } else {
+            return $oldImagePath;
+        }
     }
 
     public function updateFeaturedProduct(string $id, bool $is_featured)
@@ -235,19 +278,6 @@ class ProductRepository implements ProductRepositoryInterface
         }
 
         return $result->count() == 0 ? true : false;
-    }
-
-    private function updateThumbnail($oldThumbnail, $newThumbnail)
-    {
-        if ($newThumbnail) {
-            if ($oldThumbnail) {
-                Storage::disk('public')->delete($oldThumbnail);
-            }
-
-            return $newThumbnail->store('assets/products/thumbnails', 'public');
-        } else {
-            return $oldThumbnail;
-        }
     }
 
     private function deleteProductImages(array $imageIds)

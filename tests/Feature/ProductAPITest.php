@@ -19,7 +19,7 @@ class ProductAPITest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        mt_rand(0, 1) && Storage::fake('public');
     }
 
     public function test_product_api_call_create_with_auto_code_and_empty_slug_expect_successful()
@@ -239,7 +239,7 @@ class ProductAPITest extends TestCase
         $api->assertSuccessful();
 
         $productCategoryRepository = new ProductCategoryRepository();
-        $categoryIds = $productCategoryRepository->getDescendantCategories($rootCategory->slug);
+        $categoryIds = $productCategoryRepository->getDescendantCategories($rootCategory->id);
 
         $productCount = Product::whereIn('product_category_id', $categoryIds)->where('is_active', true)->count();
         $this->assertEquals($productCount, count($api['data']));
