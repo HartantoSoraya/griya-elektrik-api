@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Helpers\ImageHelper\ImageHelper;
 use App\Interfaces\ProductCategoryRepositoryInterface;
 use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
@@ -81,12 +82,28 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->parent_id = $data['parent_id'];
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
-        $productCategory->image = $data['image']->store('assets/product-categories', 'public');
+        $productCategory->image = $this->saveImage($data['image']);
         $productCategory->sort_order = $data['sort_order'];
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 
         return $productCategory;
+    }
+
+    private function saveImage($image)
+    {
+        if ($image) {
+            $path = $image->store('assets/product-categories', 'public');
+
+            // $storagePath = storage_path('app/public/'.$path);
+            $storagePath = Storage::disk('public')->path($path);
+            $imageHelper = new ImageHelper();
+            $imageHelper->resizeImage($storagePath, $storagePath, 500, 500);
+
+            return $path;
+        } else {
+            return null;
+        }
     }
 
     public function updateCategory(string $id, array $data)
@@ -96,14 +113,41 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         $productCategory->parent_id = $data['parent_id'];
         $productCategory->code = $data['code'];
         $productCategory->name = $data['name'];
-        if ($data['image']) {
-            $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
-        }
+        $productCategory->image = $this->updateImage($productCategory->image, $data['image']);
         $productCategory->sort_order = $data['sort_order'];
         $productCategory->slug = $data['slug'];
         $productCategory->save();
 
         return $productCategory;
+    }
+
+    // private function updateImage($oldImage, $newImage): string
+    // {
+    //     if ($oldImage) {
+    //         Storage::disk('public')->delete($oldImage);
+    //     }
+
+    //     return $newImage->store('assets/product-categories', 'public');
+    // }
+
+    private function updateImage($oldImage, $newImage)
+    {
+        if ($newImage) {
+            if ($oldImage) {
+                Storage::disk('public')->delete($oldImage);
+            }
+
+            $path = $newImage->store('assets/product-categories', 'public');
+
+            // $storagePath = storage_path('app/public/'.$path);
+            $storagePath = Storage::disk('public')->path($path);
+            $imageHelper = new ImageHelper();
+            $imageHelper->resizeImage($storagePath, $storagePath, 500, 500);
+
+            return $path;
+        } else {
+            return $oldImage;
+        }
     }
 
     public function deleteCategory(string $id)
@@ -147,15 +191,6 @@ class ProductCategoryRepository implements ProductCategoryRepositoryInterface
         }
 
         return $result->count() == 0 ? true : false;
-    }
-
-    private function updateImage($oldImage, $newImage): string
-    {
-        if ($oldImage) {
-            Storage::disk('public')->delete($oldImage);
-        }
-
-        return $newImage->store('assets/product-categories', 'public');
     }
 
     public function isDescendantCategory($ancestorId, $categoryId)

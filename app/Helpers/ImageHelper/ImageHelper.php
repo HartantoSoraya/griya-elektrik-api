@@ -115,4 +115,41 @@ class ImageHelper
 
         return $uploadedFile;
     }
+
+    public function resizeImage(string $sourcePath, string $destinationPath, int $outputWidth, int $outputHeight)
+    {
+        // Ambil ukuran asli gambar
+        [$width, $height] = getimagesize($sourcePath);
+
+        // Hitung rasio
+        $thumbRatio = $outputWidth / $outputHeight;
+        $originalRatio = $width / $height;
+
+        if ($thumbRatio > $originalRatio) {
+            $newHeight = $outputHeight;
+            $newWidth = $width / ($height / $outputHeight);
+        } else {
+            $newWidth = $outputWidth;
+            $newHeight = $height / ($width / $outputWidth);
+        }
+
+        // Buat gambar baru dengan ukuran yang sudah ditentukan
+        $thumbnail = imagecreatetruecolor($newWidth, $newHeight);
+
+        // Buat image dari file asli berdasarkan tipe file
+        $source = imagecreatefromstring(file_get_contents($sourcePath));
+
+        // Salin dan ubah ukuran gambar
+        imagecopyresampled($thumbnail, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // Path untuk menyimpan thumbnail
+        // $thumbnailPath = storage_path($destinationPath);
+
+        // Simpan thumbnail berdasarkan tipe file
+        imagejpeg($thumbnail, $destinationPath, 90); // untuk JPEG
+
+        // Hapus gambar dari memori
+        imagedestroy($thumbnail);
+        imagedestroy($source);
+    }
 }

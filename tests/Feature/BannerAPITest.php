@@ -13,7 +13,7 @@ class BannerAPITest extends TestCase
     {
         parent::setUp();
 
-        Storage::fake('public');
+        mt_rand(0, 1) && Storage::fake('public');
     }
 
     public function test_banner_api_call_create_expect_successful()

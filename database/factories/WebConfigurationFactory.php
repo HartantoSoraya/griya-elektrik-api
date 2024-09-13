@@ -24,7 +24,7 @@ class WebConfigurationFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'description' => $this->faker->paragraph,
+            'description' => $this->faker->text(),
             'logo' => UploadedFile::fake()->image('logo.jpg'),
         ];
     }
